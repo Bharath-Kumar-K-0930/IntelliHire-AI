@@ -15,7 +15,7 @@ Vercel is the recommended platform for the frontend.
     *   **Framework**: Vite
     *   **Root Directory**: `frontend`
     *   **Environment Variables**:
-        *   `VITE_API_URL`: The URL of your deployed backend (e.g., `https://intellihire-api.onrender.com`).
+        *   `VITE_API_BASE_URL`: The URL of your deployed backend + `/api` (e.g., `https://intellihire-ai.onrender.com/api`).
 4.  **Deploy**: Click "Deploy". Vercel will build and host your site automatically.
 
 ## 2. Deploying Backend (Render / Railway)
@@ -47,10 +47,18 @@ Render or Railway are great for hosting Node.js APIs.
 *   **MongoDB**: Use [MongoDB Atlas](https://www.mongodb.com/atlas) (Free Tier available).
 *   **Redis**: Use [Upstash](https://upstash.com/) (Serverless & Free Tier).
 
-## 4. Final Steps
+## 4. Troubleshooting
+If your service is live but failing to connect to the database (Check Render logs), visit the health endpoint:
+`https://your-service.onrender.com/health`
 
-1.  After deploying the backend, copy its URL (e.g., `https://my-api.onrender.com`).
-2.  Update your Vercel frontend `VITE_API_URL` variable with this URL.
+This endpoint will show you:
+- Which Environment Variables are recognized as "PRESENT".
+- The current Database connection status.
+
+## 5. Final Steps
+
+1.  After deploying the backend, copy its URL and append `/api` (e.g., `https://my-api.onrender.com/api`).
+2.  Update your Vercel frontend `VITE_API_BASE_URL` variable with this URL.
 3.  Redeploy Vercel to apply the change.
 
 ✅ Your Full Stack AI Application is now live!
