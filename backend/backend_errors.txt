@@ -1,0 +1,24 @@
+[2026-01-21T18:39:39.462Z] Error: getaddrinfo ENOTFOUND ac-iqbwt45-shard-00-01.syb6sxa.mongodb.net
+Stack: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-iqbwt45-shard-00-01.syb6sxa.mongodb.net
+    at Topology.selectServer (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\sdam\topology.js:346:38)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processTimers (node:internal/timers:520:9)
+    at async tryOperation (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\operations\execute_operation.js:150:18)
+    at async executeOperation (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\operations\execute_operation.js:80:16)
+    at async Collection.findOneAndUpdate (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\collection.js:544:16)
+    at async model.Query._findOneAndUpdate (D:\Projects\IntelliHire AI\backend\node_modules\mongoose\lib\query.js:3547:13)
+    at async model.Query.exec (D:\Projects\IntelliHire AI\backend\node_modules\mongoose\lib\query.js:4652:63)
+    at async Object.<anonymous> (file:///D:/Projects/IntelliHire%20AI/backend/routes/resume.js:39:17)
+
+[2026-01-21T18:46:04.641Z] Error: 84530000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+Stack: MongoServerSelectionError: 84530000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+    at Topology.selectServer (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\sdam\topology.js:346:38)
+    at async tryOperation (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\operations\execute_operation.js:150:18)
+    at async executeOperation (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\operations\execute_operation.js:80:16)
+    at async Collection.findOneAndUpdate (D:\Projects\IntelliHire AI\backend\node_modules\mongodb\lib\collection.js:544:16)
+    at async model.Query._findOneAndUpdate (D:\Projects\IntelliHire AI\backend\node_modules\mongoose\lib\query.js:3547:13)
+    at async model.Query.exec (D:\Projects\IntelliHire AI\backend\node_modules\mongoose\lib\query.js:4652:63)
+    at async Object.<anonymous> (file:///D:/Projects/IntelliHire%20AI/backend/routes/resume.js:39:17)
+
