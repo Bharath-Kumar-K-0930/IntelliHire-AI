@@ -2,6 +2,7 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'secret123', {
@@ -10,6 +11,15 @@ const generateToken = (id) => {
 };
 
 export default async function authRoutes(fastify, options) {
+    // Middleware to check DB connection for auth routes
+    fastify.addHook('preHandler', async (request, reply) => {
+        if (mongoose.connection.readyState !== 1) {
+            return reply.code(503).send({
+                error: 'Database not connected. Please ensure MONGO_URL is set correctly in Render dashboard settings (Environment tab).'
+            });
+        }
+    });
+
     fastify.post('/auth/register', async (request, reply) => {
         const { name, email, password } = request.body;
 

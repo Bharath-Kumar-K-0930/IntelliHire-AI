@@ -43,7 +43,11 @@ export const AppProvider = ({ children }) => {
             localStorage.setItem('user', JSON.stringify(data));
             return true;
         } catch (error) {
-            console.error('Login failed:', error.response?.data?.error || error.message);
+            console.error('Login failed details:', {
+                status: error.response?.status,
+                data: error.response?.data,
+                message: error.message
+            });
             throw error;
         }
     };
