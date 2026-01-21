@@ -17,7 +17,7 @@ export const AppProvider = ({ children }) => {
     const [resumeExists, setResumeExists] = useState(true);
 
     const api = axios.create({
-        baseURL: 'http://localhost:5000/api',
+        baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
         headers: {
             'x-user-id': userId,
             'Authorization': token ? `Bearer ${token}` : ''
@@ -36,7 +36,7 @@ export const AppProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const { data } = await api.post('/auth/login', { email, password });
             setUser(data);
             setToken(data.token);
             localStorage.setItem('token', data.token);
@@ -50,7 +50,7 @@ export const AppProvider = ({ children }) => {
 
     const register = async (name, email, password) => {
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+            const { data } = await api.post('/auth/register', { name, email, password });
             setUser(data);
             setToken(data.token);
             localStorage.setItem('token', data.token);

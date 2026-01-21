@@ -3,6 +3,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import staticPlugin from '@fastify/static';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import connectDB from './db/connect.js';
 
@@ -40,11 +41,14 @@ fastify.register(applyRoutes, { prefix: '/api' });
 fastify.register(chatRoutes, { prefix: '/api' });
 fastify.register(profileRoutes, { prefix: '/api' });
 
-// Serve frontend in production (optional, for now just API)
-await fastify.register(staticPlugin, {
-    root: path.join(__dirname, 'public'),
-    prefix: '/public/',
-});
+// Serve static files if they exist
+const publicPath = path.join(__dirname, 'public');
+if (fs.existsSync(publicPath)) {
+    await fastify.register(staticPlugin, {
+        root: publicPath,
+        prefix: '/public/',
+    });
+}
 
 // Basic Health Check
 fastify.get('/health', async (request, reply) => {
