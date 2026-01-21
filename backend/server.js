@@ -5,6 +5,7 @@ import staticPlugin from '@fastify/static';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
 import connectDB from './db/connect.js';
 
 import jobRoutes from './routes/jobs.js';
@@ -50,9 +51,20 @@ if (fs.existsSync(publicPath)) {
     });
 }
 
-// Basic Health Check
+// Basic Health Check & Diagnostics
 fastify.get('/health', async (request, reply) => {
-    return { status: 'ok', timestamp: new Date().toISOString() };
+    return {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        env: {
+            MONGO_URL: process.env.MONGO_URL ? 'PRESENT (Length: ' + process.env.MONGO_URL.length + ')' : 'MISSING',
+            GEMINI_API_KEY: process.env.GEMINI_API_KEY ? 'PRESENT' : 'MISSING',
+            ADZUNA_APP_ID: process.env.ADZUNA_APP_ID ? 'PRESENT' : 'MISSING',
+            ADZUNA_API_KEY: process.env.ADZUNA_API_KEY ? 'PRESENT' : 'MISSING',
+            PORT: process.env.PORT || 'Default (5000)'
+        },
+        database: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED (State: ' + mongoose.connection.readyState + ')'
+    };
 });
 
 // Start Server
