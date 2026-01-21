@@ -4,15 +4,17 @@ const connectDB = async () => {
     const MAX_RETRIES = 5;
     let retries = 0;
 
-    if (!process.env.MONGO_URL) {
-        console.error('FATAL ERROR: MONGO_URL environment variable is MISSING or UNDEFINED in Render dashboard.');
+    const mongoUrl = process.env.MONGO_URL || process.env.MONGO_URI;
+
+    if (!mongoUrl) {
+        console.error('FATAL ERROR: MONGO_URL or MONGO_URI environment variable is MISSING or UNDEFINED in Render dashboard.');
         console.log('Available Env Keys:', Object.keys(process.env).join(', '));
         return; // Don't crash immediately, allow health check to serve diagnostics
     }
 
     while (retries < MAX_RETRIES) {
         try {
-            const conn = await mongoose.connect(process.env.MONGO_URL, {
+            const conn = await mongoose.connect(mongoUrl, {
                 serverSelectionTimeoutMS: 30000,
             });
             console.log(`MongoDB Connected: ${conn.connection.host}`);

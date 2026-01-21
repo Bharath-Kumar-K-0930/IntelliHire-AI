@@ -57,7 +57,8 @@ fastify.get('/health', async (request, reply) => {
         status: 'ok',
         timestamp: new Date().toISOString(),
         env: {
-            MONGO_URL: process.env.MONGO_URL ? 'PRESENT (Length: ' + process.env.MONGO_URL.length + ')' : 'MISSING',
+            MONGO_URL: process.env.MONGO_URL ? 'PRESENT' : 'MISSING',
+            MONGO_URI: process.env.MONGO_URI ? 'PRESENT' : 'MISSING',
             GEMINI_API_KEY: process.env.GEMINI_API_KEY ? 'PRESENT' : 'MISSING',
             ADZUNA_APP_ID: process.env.ADZUNA_APP_ID ? 'PRESENT' : 'MISSING',
             ADZUNA_API_KEY: process.env.ADZUNA_API_KEY ? 'PRESENT' : 'MISSING',
