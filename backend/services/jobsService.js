@@ -46,38 +46,75 @@ const fetchFromAdzuna = async ({ country = 'in', page = 1, resultsPerPage = 20, 
     }
 };
 
-export const fetchJobs = async ({ country = 'in', page = 1, resultsPerPage = 20, role = '', skills = '', location = '' }) => {
-    const hasCriteria = role || skills || location;
+const detectCountry = (loc) => {
+    if (!loc) return 'in';
+    const l = loc.toLowerCase();
+    if (l.includes('usa') || l.includes('united states') || l.includes('us')) return 'us';
+    if (l.includes('uk') || l.includes('united kingdom') || l.includes('london')) return 'gb';
+    if (l.includes('canada')) return 'ca';
+    if (l.includes('australia')) return 'au';
+    return 'in'; // Default to India
+};
 
-    // Priority 1: Role/Title and Location
-    if (role || location) {
-        console.log(`[Tier 1] Searching for Role: "${role}" in Location: "${location}"`);
-        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: role, where: location });
+const cleanLocation = (loc, country) => {
+    if (!loc) return '';
+    const countrySuffixes = ['india', 'in', 'usa', 'us', 'united states', 'uk', 'united kingdom', 'gb'];
+    let cleaned = loc.trim().toLowerCase();
+
+    // Remove common country names/suffixes to make 'where' more specific for Adzuna
+    for (const suffix of countrySuffixes) {
+        if (cleaned.endsWith(`, ${suffix}`)) {
+            cleaned = cleaned.slice(0, -(suffix.length + 2)).trim();
+            break;
+        }
+        if (cleaned.endsWith(` ${suffix}`)) {
+            cleaned = cleaned.slice(0, -(suffix.length + 1)).trim();
+            break;
+        }
+    }
+    return cleaned;
+};
+
+export const fetchJobs = async ({ page = 1, resultsPerPage = 20, role = '', skills = '', location = '' }) => {
+    const hasCriteria = role || skills || location;
+    const country = detectCountry(location);
+    const cleanedLocation = cleanLocation(location, country);
+
+    // Tier 1: Role/Title AND Location
+    if (role && cleanedLocation) {
+        console.log(`[Tier 1] Searching: "${role}" in "${cleanedLocation}"`);
+        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: role, where: cleanedLocation });
         if (jobs && jobs.length > 0) return jobs;
     }
 
-    // Priority 2: Skills
+    // Tier 2: Role Only (Broadens the search if location was too specific)
+    if (role) {
+        console.log(`[Tier 2] Searching Role Only: "${role}"`);
+        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: role });
+        if (jobs && jobs.length > 0) return jobs;
+    }
+
+    // Tier 3: Skills
     if (skills) {
-        console.log(`[Tier 2] Searching for Skills: "${skills}"`);
+        console.log(`[Tier 3] Searching Skills: "${skills}"`);
         const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: skills.replace(/,/g, ' ') });
         if (jobs && jobs.length > 0) return jobs;
     }
 
-    // Priority 3: Location Only
-    if (location) {
-        console.log(`[Tier 3] Searching for Location Only: "${location}"`);
-        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: '', where: location });
+    // Tier 4: Location Only
+    if (cleanedLocation) {
+        console.log(`[Tier 4] Searching Location Only: "${cleanedLocation}"`);
+        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: '', where: cleanedLocation });
         if (jobs && jobs.length > 0) return jobs;
     }
 
-    // If search criteria were provided but no results found, return empty array (triggers "not found" UI)
+    // If search criteria were provided but no results found, return empty array
     if (hasCriteria) {
-        console.warn('All tiers failed for specific criteria, returning empty results.');
+        console.warn('All tiers failed for specific criteria.');
         return [];
     }
 
-    // If no search criteria provided (e.g., initial load), return mock data for demo
-    console.log('No criteria provided, returning mock data for initial load.');
+    // If no search criteria provided (initial load), return mock data for demo
     return getMockJobs();
 };
 
