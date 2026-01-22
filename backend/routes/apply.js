@@ -61,13 +61,21 @@ export default async function applyRoutes(fastify, options) {
             return reply.code(401).send({ error: 'Please login to track applications' });
         }
 
-        if (!job || !job.jobId) {
-            return reply.code(400).send({ error: 'Invalid job data provided' });
+        if (!job) {
+            return reply.code(400).send({ error: 'No job data provided' });
+        }
+
+        // Robust ID extraction
+        const safeJobId = job.jobId || job.job_id || job.id;
+
+        if (!safeJobId) {
+            console.log('Missing Job ID in payload:', job);
+            return reply.code(400).send({ error: 'Invalid job data: Missing Job ID' });
         }
 
         try {
             // Check if already applied (MongoDB)
-            const exists = await Application.findOne({ userId, 'job.jobId': job.jobId });
+            const exists = await Application.findOne({ userId, 'job.jobId': safeJobId });
             if (exists) {
                 return exists; // Idempotent
             }
@@ -76,12 +84,12 @@ export default async function applyRoutes(fastify, options) {
             const application = await Application.create({
                 userId,
                 job: {
-                    jobId: job.jobId,
-                    title: job.title,
-                    company: job.company,
-                    location: job.location,
+                    jobId: safeJobId,
+                    title: job.title || job.job_title || 'Unknown Role',
+                    company: job.company || job.employer_name || 'Unknown Company',
+                    location: job.location || job.job_city || 'Remote',
                     salary: job.salary,
-                    url: job.applyUrl || job.url, // Handle different field names
+                    url: job.applyUrl || job.url || job.job_apply_link,
                     description: job.description
                 },
                 status: 'Applied'
@@ -119,12 +127,12 @@ export default async function applyRoutes(fastify, options) {
                 if (!Array.isArray(appsList)) appsList = [];
 
                 // Check for duplicates in Redis list to avoid error
-                const isRedisDuplicate = appsList.some(app => app.jobId === job.jobId);
+                const isRedisDuplicate = appsList.some(app => app.jobId === safeJobId);
 
                 if (!isRedisDuplicate) {
                     appsList.push({
-                        jobId: job.jobId,
-                        company: job.company,
+                        jobId: safeJobId,
+                        company: job.company || job.employer_name || 'Unknown Company',
                         status: 'Applied',
                         timeline: {
                             appliedAt: Date.now(),
