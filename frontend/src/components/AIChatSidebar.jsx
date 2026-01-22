@@ -28,7 +28,7 @@ const AIChatSidebar = () => {
                 if (action.type === 'FILTER') {
                     // console.log("Applying filters:", action.payload);
                     await fetchJobs(action.payload);
-                    // navigate('/jobs'); // Ensure user sees the results
+                    navigate('/jobs'); // Ensure user sees the results
                 } else if (action.type === 'NAVIGATE') {
                     navigate(action.payload.path);
                     setIsOpen(false); // Close sidebar on navigation
