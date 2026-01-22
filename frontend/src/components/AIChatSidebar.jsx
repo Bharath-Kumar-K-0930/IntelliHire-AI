@@ -10,15 +10,16 @@ const AIChatSidebar = () => {
     const { api, fetchJobs } = useApp();
     const navigate = useNavigate();
 
-    const handleSend = async () => {
-        if (!message.trim()) return;
+    const handleSend = async (text = null) => {
+        const msgToSend = text || message;
+        if (!msgToSend.trim()) return;
 
-        const userMsg = { role: 'user', content: message };
+        const userMsg = { role: 'user', content: msgToSend };
         setChat(prev => [...prev, userMsg]);
         setMessage('');
 
         try {
-            const res = await api.post('/chat', { message });
+            const res = await api.post('/chat', { message: msgToSend });
             const { text, action } = res.data;
 
             setChat(prev => [...prev, { role: 'ai', content: text }]);
@@ -67,7 +68,24 @@ const AIChatSidebar = () => {
                                     <Sparkles className="w-8 h-8 text-primary-500" />
                                 </div>
                                 <h3 className="font-bold text-slate-900 mb-1">How can I help you?</h3>
-                                <p className="text-xs">Ask me about jobs or how matching works.</p>
+                                <p className="text-xs mb-6">Ask me about jobs or how matching works.</p>
+
+                                <div className="space-y-2">
+                                    {[
+                                        "Find me remote React jobs",
+                                        "How can I improve my resume?",
+                                        "Show me high salary jobs in NY",
+                                        "What skills are in demand?"
+                                    ].map((q, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => handleSend(q)}
+                                            className="block w-full text-left p-3 rounded-xl bg-white border border-slate-200 hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50 transition-all text-xs font-medium shadow-sm"
+                                        >
+                                            {q}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         )}
                         {chat.map((msg, idx) => (
