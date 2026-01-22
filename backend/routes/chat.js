@@ -2,15 +2,15 @@ import { getGeminiResponse } from '../ai/service.js';
 import redis from '../redis/client.js';
 
 export default async function chatRoutes(fastify, options) {
-    fastify.post('/chat', async (request, reply) => {
-        const { message } = request.body;
-        const userId = request.headers['x-user-id'] || 'default-user';
+  fastify.post('/chat', async (request, reply) => {
+    const { message } = request.body;
+    const userId = request.headers['x-user-id'] || 'default-user';
 
-        const resumeText = await redis.get(`resume:${userId}`);
-        const applications = await redis.get(`applications:${userId}`);
-        const matches = await redis.get(`matches:${userId}`);
+    const resumeText = await redis.get(`resume:${userId}`);
+    const applications = await redis.get(`applications:${userId}`);
+    const matches = await redis.get(`matches:${userId}`);
 
-        const systemPrompt = `
+    const systemPrompt = `
       You are IntelliHire AI, an intelligent job search assistant.
       
       Your goal is to help users find jobs or answer questions about the platform.
@@ -50,22 +50,34 @@ export default async function chatRoutes(fastify, options) {
       Keep the "text" strict, professional, and concise. Do not use markdown in the JSON "text" field.
     `;
 
-        const fullPrompt = `${systemPrompt}\n\nUser Message: ${message}`;
+    const fullPrompt = `${systemPrompt}\n\nUser Message: ${message}`;
 
-        try {
-            const rawText = await getGeminiResponse(fullPrompt);
-            // Clean up markdown code blocks if Gemini adds them
-            const jsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-            const result = JSON.parse(jsonText);
+    try {
+      const rawText = await getGeminiResponse(fullPrompt);
 
-            return result;
-        } catch (error) {
-            console.error('AI Processing Error:', error);
-            // Fallback plain text response
-            return {
-                text: "I'm having trouble processing that request right now. Could you try rephrasing?",
-                action: { type: 'NONE' }
-            };
-        }
-    });
+      // Extract JSON if wrapped in code blocks or mixed with text
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      const jsonText = jsonMatch ? jsonMatch[0] : rawText;
+
+      let result;
+      try {
+        result = JSON.parse(jsonText);
+      } catch (e) {
+        console.warn('AI Parsing Failed, fallback to raw text');
+        result = {
+          text: rawText, // Fallback to raw response if not JSON
+          action: { type: 'NONE' }
+        };
+      }
+
+      return result;
+    } catch (error) {
+      console.error('AI Processing Error:', error);
+      // Fallback plain text response
+      return {
+        text: "I'm having trouble processing that request right now. Could you try rephrasing?",
+        action: { type: 'NONE' }
+      };
+    }
+  });
 }
