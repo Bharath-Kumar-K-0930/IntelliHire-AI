@@ -61,15 +61,24 @@ export default async function applyRoutes(fastify, options) {
                 const cachedApps = await redis.get(key);
                 let appsList = [];
 
-                if (Array.isArray(cachedApps)) {
-                    appsList = cachedApps;
-                } else if (typeof cachedApps === 'string') {
-                    try {
-                        appsList = JSON.parse(cachedApps);
-                    } catch (e) {
-                        appsList = [];
+                if (cachedApps) {
+                    if (Array.isArray(cachedApps)) {
+                        appsList = cachedApps;
+                    } else if (typeof cachedApps === 'object') {
+                        // Sometimes Redis returns a single object if previously stored incorrectly
+                        appsList = [cachedApps];
+                    } else if (typeof cachedApps === 'string') {
+                        try {
+                            appsList = JSON.parse(cachedApps);
+                        } catch (e) {
+                            console.warn('Failed to parse Redis applications list', e);
+                            appsList = [];
+                        }
                     }
                 }
+
+                // Ensure it is truly an array before pushing
+                if (!Array.isArray(appsList)) appsList = [];
 
                 // Check for duplicates in Redis list to avoid error
                 const isRedisDuplicate = appsList.some(app => app.jobId === job.jobId);
