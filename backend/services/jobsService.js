@@ -1,10 +1,5 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-
-dotenv.config();
-
-import axios from 'axios';
-import dotenv from 'dotenv';
 import redis from '../redis/client.js'; // Import Redis client
 
 dotenv.config();
