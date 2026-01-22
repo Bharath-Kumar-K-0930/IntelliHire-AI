@@ -54,6 +54,10 @@ export default async function applyRoutes(fastify, options) {
             return reply.code(401).send({ error: 'Please login to track applications' });
         }
 
+        if (!job || !job.jobId) {
+            return reply.code(400).send({ error: 'Invalid job data provided' });
+        }
+
         try {
             // Check if already applied (MongoDB)
             const exists = await Application.findOne({ userId, 'job.jobId': job.jobId });
