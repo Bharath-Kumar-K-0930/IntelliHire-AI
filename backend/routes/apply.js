@@ -49,15 +49,9 @@ export default async function applyRoutes(fastify, options) {
     fastify.post('/applications', async (request, reply) => {
         const userId = request.headers['x-user-id'];
         const body = request.body;
-
-        console.log('--- Apply POST Debug ---');
-        console.log('UserID:', userId);
-        console.log('Body:', JSON.stringify(body, null, 2));
-
         const { job } = body;
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            console.log('Invalid UserID');
             return reply.code(401).send({ error: 'Please login to track applications' });
         }
 
