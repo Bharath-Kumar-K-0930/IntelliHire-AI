@@ -26,9 +26,9 @@ export default async function chatRoutes(fastify, options) {
 
       Action Types:
       - FILTER: Use when user wants to see jobs. Payload keys: 'role', 'location', 'skills', 'jobType', 'datePosted', 'minScore'.
-        - role: string (e.g. "developer", "designer")
+        - role: string (e.g. "developer", "designer", "senior")
         - location: string (e.g. "London", "Remote")
-        - skills: string (comma separated, e.g. "react, node")
+        - skills: string (comma separated, e.g. "react, node, figma")
         - jobType: "full_time", "contract", "part_time", "permanent"
         - datePosted: "24h", "week", "month"
         - minScore: "high" (>70%), "medium" (>40%)
@@ -40,12 +40,17 @@ export default async function chatRoutes(fastify, options) {
       - Resume: ${resumeText ? 'Uploaded' : 'Not uploaded'}
       - Logged In: ${userId !== 'default-user'}
 
-      Common Questions:
-      - "Where are my applications?" -> NAVIGATE to /applications
-      - "Upload resume" -> NAVIGATE to /resume
-      - "High match jobs" -> FILTER with minScore: 'high'
-      - "Remote React jobs" -> FILTER with location: 'Remote', skills: 'react'
-      - "Jobs posted this week" -> FILTER with datePosted: 'week'
+      Intelligent Mapping Examples:
+      - "Show me remote React jobs" -> FILTER { location: 'Remote', skills: 'react' }
+      - "Give me UX jobs requiring Figma" -> FILTER { role: 'ux', skills: 'figma' }
+      - "Which jobs have highest match scores?" -> FILTER { minScore: 'high' }
+      - "Find senior roles posted this week" -> FILTER { role: 'senior', datePosted: 'week' }
+      - "Where do I see my applications?" -> NAVIGATE { path: '/applications' }
+      - "How do I upload my resume?" -> NAVIGATE { path: '/resume' }
+      
+      Product Knowledge:
+      - "How does matching work?": Explain that we parse your uploaded PDF resume, compare it against job descriptions using Google Gemini AI, and assign a match score (0-100%) based on skills and experience.
+      - "How do I apply?": Explain that clicking "Apply" takes you to the company's site, and we track the application status in your dashboard.
 
       Keep the "text" strict, professional, and concise. Do not use markdown in the JSON "text" field.
     `;
