@@ -31,10 +31,7 @@ const applicationSchema = new mongoose.Schema({
     notes: String
 });
 
-applicationSchema.pre('save', function (next) {
-    this.updatedAt = Date.now();
-    next();
-});
+
 
 const Application = mongoose.model('Application', applicationSchema);
 export default Application;

@@ -160,7 +160,7 @@ export default async function applyRoutes(fastify, options) {
             return application;
         } catch (error) {
             console.error(error);
-            return reply.code(500).send({ error: 'Failed to track application' });
+            return reply.code(500).send({ error: 'Failed to track application', details: error.message });
         }
     });
 
