@@ -1,6 +1,7 @@
 
 import Application from '../models/Application.js';
 import mongoose from 'mongoose';
+import redis from '../redis/client.js';
 
 export default async function applyRoutes(fastify, options) {
     // Get all applications for the logged-in user
@@ -32,12 +33,13 @@ export default async function applyRoutes(fastify, options) {
         }
 
         try {
-            // Check if already applied
+            // Check if already applied (MongoDB)
             const exists = await Application.findOne({ userId, 'job.jobId': job.jobId });
             if (exists) {
                 return exists; // Idempotent
             }
 
+            // Create in MongoDB
             const application = await Application.create({
                 userId,
                 job: {
@@ -51,6 +53,33 @@ export default async function applyRoutes(fastify, options) {
                 },
                 status: 'Applied'
             });
+
+            // --- REDIS TRACKING ---
+            const key = `applications:${userId}`;
+            try {
+                // Get existing list or empty
+                const cachedApps = await redis.get(key) || [];
+                // Redis might return string if using REST client directly in some modes, but @upstash/redis usually parses JSON.
+                // Just in case, ensuring it's an array
+                const appsList = Array.isArray(cachedApps) ? cachedApps : [];
+
+                appsList.push({
+                    jobId: job.jobId,
+                    company: job.company,
+                    status: 'Applied',
+                    timeline: {
+                        appliedAt: Date.now(),
+                        interviewAt: null,
+                        offerAt: null
+                    }
+                });
+
+                await redis.set(key, JSON.stringify(appsList));
+            } catch (redisErr) {
+                console.error('Redis error tracking application:', redisErr);
+                // Don't fail the request if Redis updates fail, as MongoDB is the source of truth
+            }
+            // ----------------------
 
             return application;
         } catch (error) {
