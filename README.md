@@ -16,23 +16,23 @@ The system follows a modern microservices-inspired architecture:
 *   **Database**: MongoDB (Atlas) for persistent user profiles and application tracking.
 *   **Cache**: Upstash Redis for caching job results and match scores (Serverless).
 *   **AI Engine**: Google Gemini 1.5 Flash for semantic matching and chat assistance.
-*   **Job Source**: Adzuna API for real-time job listings.
+*   **Job Source**: RapidAPI (JSearch) for real-time job listings.
 
 ## 🚀 Setup Instructions
 
 ### Prerequisites
 *   Node.js v18+
-*   MongoDB Atlas Account (or local instance)
+*   MongoDB Atlas Account
 *   Upstash Redis Account
 *   Google Gemini API Key
-*   Adzuna API Credentials
+*   RapidAPI Account (JSearch API)
 
 ### Environment Variables
 Create a `.env` file in the `backend` directory:
 ```env
 PORT=5000
-ADZUNA_APP_ID=your_id
-ADZUNA_APP_KEY=your_key
+RAPIDAPI_KEY=your_rapidapi_key
+RAPIDAPI_HOST=jsearch.p.rapidapi.com
 GEMINI_API_KEY=your_gemini_key
 UPSTASH_REDIS_REST_URL=your_upstash_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_token
@@ -64,6 +64,34 @@ JWT_SECRET=your_jwt_secret
 
 4.  **Open Browser:**
     Navigate to `http://localhost:5173`
+
+## 🔹 Upstash Redis in IntelliHire AI
+
+### 1️⃣ Why Upstash Redis Is Used
+The assignment explicitly requires **"Storage: In-memory use redis e.g upstash"**. This means no traditional SQL database is mandated for session speed, and Upstash Redis is chosen because it is **Serverless**, **Fast**, and **Node.js-friendly**.
+
+### 2️⃣ What Data Is Stored
+Upstash Redis acts as the high-speed data layer for the entire application:
+
+1.  **🔐 User Sessions**: Stores logged-in user state (`session:{userId}`) for fast auth validation.
+2.  **📄 Resume Storage**: Caches extracted resume text (`resume:{userId}`) to give the AI context without re-parsing files.
+3.  **💼 Job Listings Cache**: Stores JSearch API results (`jobs:{queryHash}`) to reduce API costs and latency.
+4.  **🤖 AI Match Scores**: Caches the expensive AI analysis (`match:{userId}:{jobId}`) so we don't re-bill for the same job.
+5.  **📊 Application Tracking**: Manages the user's applied jobs list (`applications:{userId}`).
+
+### 3️⃣ Implementation Strategy
+We use the purely HTTP-based `@upstash/redis` client which works perfectly in serverless environments (like Vercel/Render) where TCP connections can be flaky.
+
+**Key Naming Strategy:**
+*   `session:...` - Auth tokens
+*   `resume:...` - Parsed resume text
+*   `jobs:...` - Cached search results
+*   `match:...` - AI scoring results
+
+### 4️⃣ Performance & Scalability
+*   **100 Jobs**: Cached instantly in memory.
+*   **10k Users**: Redis handles high-concurrency reads effortlessly, offloading the primary database.
+*   **Cost**: Caching AI results saves significant token usage from the Gemini API.
 
 ## 🧠 AI Matching Logic
 

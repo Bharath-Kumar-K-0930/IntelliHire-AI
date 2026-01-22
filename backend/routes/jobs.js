@@ -112,16 +112,17 @@ export default async function jobRoutes(fastify, options) {
     });
 
     fastify.get('/jobs/test-api', async (request, reply) => {
-        const appId = process.env.ADZUNA_APP_ID;
-        const apiKey = process.env.ADZUNA_API_KEY;
+        const apiKey = process.env.RAPIDAPI_KEY;
+        const apiHost = process.env.RAPIDAPI_HOST;
 
         try {
             process.env.DEBUG_API = 'true';
-            const jobs = await fetchJobs({ what: 'javascript', country: 'gb' });
+            // Corrected query params for JSearch
+            const jobs = await fetchJobs({ role: 'javascript', location: 'London, UK' });
             delete process.env.DEBUG_API;
             return {
                 success: true,
-                config: { appId: appId ? 'Set' : 'Missing', apiKey: apiKey ? 'Set' : 'Missing' },
+                config: { apiKey: apiKey ? 'Set' : 'Missing', apiHost: apiHost ? 'Set' : 'Missing' },
                 count: jobs.length,
                 isMock: jobs.length > 0 && jobs[0].jobId.toString().startsWith('mock'),
                 firstJob: jobs[0]

@@ -60,8 +60,8 @@ fastify.get('/health', async (request, reply) => {
             MONGO_URL: process.env.MONGO_URL ? 'PRESENT' : 'MISSING',
             MONGO_URI: process.env.MONGO_URI ? 'PRESENT' : 'MISSING',
             GEMINI_API_KEY: process.env.GEMINI_API_KEY ? 'PRESENT' : 'MISSING',
-            ADZUNA_APP_ID: process.env.ADZUNA_APP_ID ? 'PRESENT' : 'MISSING',
-            ADZUNA_API_KEY: process.env.ADZUNA_API_KEY ? 'PRESENT' : 'MISSING',
+            RAPIDAPI_KEY: process.env.RAPIDAPI_KEY ? 'PRESENT' : 'MISSING',
+            RAPIDAPI_HOST: process.env.RAPIDAPI_HOST ? 'PRESENT' : 'MISSING',
             PORT: process.env.PORT || 'Default (5000)'
         },
         database: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED (State: ' + mongoose.connection.readyState + ')'

@@ -3,118 +3,131 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const ADZUNA_BASE_URL = 'https://api.adzuna.com/v1/api/jobs';
+import axios from 'axios';
+import dotenv from 'dotenv';
+import redis from '../redis/client.js'; // Import Redis client
 
-const fetchFromAdzuna = async ({ country = 'in', page = 1, resultsPerPage = 20, what = '', where = '' }) => {
+dotenv.config();
+
+const RAPID_API_BASE_URL = 'https://jsearch.p.rapidapi.com/search';
+
+const fetchFromJSearch = async ({ query, page = 1 }) => {
     try {
-        const appId = process.env.ADZUNA_APP_ID;
-        const apiKey = process.env.ADZUNA_API_KEY;
+        const apiKey = process.env.RAPIDAPI_KEY;
+        const apiHost = process.env.RAPIDAPI_HOST;
 
-        if (!appId || !apiKey) {
-            console.warn('Adzuna credentials missing');
+        if (!apiKey || !apiHost) {
+            console.warn('RapidAPI credentials missing: RAPIDAPI_KEY or RAPIDAPI_HOST');
             return null;
         }
 
-        const apiUrl = `${ADZUNA_BASE_URL}/${country}/search/${page}`;
-        console.log(`Calling Adzuna API [what="${what}", where="${where}"]: ${apiUrl}`);
+        // Cache Key generation
+        const cacheKey = `jobs:${query}:${page}`;
 
-        const params = {
-            app_id: appId,
-            app_key: apiKey,
-            results_per_page: resultsPerPage,
-            what: what || '',
-            content_type: 'application/json'
+        // 1. Try fetching from Redis Cache first
+        console.log(`Checking cache for: ${cacheKey}`);
+        const cachedJobs = await redis.get(cacheKey);
+
+        if (cachedJobs) {
+            console.log('Returning cached jobs from Redis');
+            // Redis returns string/object depending on client config, ensure we parse if string
+            return typeof cachedJobs === 'string' ? JSON.parse(cachedJobs) : cachedJobs;
+        }
+
+        console.log(`Cache miss. Calling JSearch API for: "${query}" (Page ${page})`);
+
+        const options = {
+            method: 'GET',
+            url: RAPID_API_BASE_URL,
+            params: {
+                query: query,
+                page: page.toString(),
+                num_pages: '1'
+            },
+            headers: {
+                'X-RapidAPI-Key': apiKey,
+                'X-RapidAPI-Host': apiHost
+            }
         };
-        if (where) params.where = where;
 
-        const response = await axios.get(apiUrl, { params });
-        return response.data.results.map(job => ({
-            jobId: job.id,
-            title: job.title,
-            company: job.company?.display_name || 'Anonymous',
-            location: job.location?.display_name || 'Remote',
-            description: job.description,
-            jobType: mapJobType(job.contract_type),
-            workMode: 'Remote',
-            datePosted: job.created,
-            applyUrl: job.redirect_url,
-            salary: job.salary_min ? `${job.salary_min} - ${job.salary_max}` : 'Not disclosed'
+        const response = await axios.request(options);
+        const data = response.data.data;
+
+        if (!data) return null;
+
+        const formattedJobs = data.map(job => ({
+            jobId: job.job_id,
+            title: job.job_title,
+            company: job.employer_name || 'Anonymous',
+            location: `${job.job_city || ''}, ${job.job_country || ''}`.replace(/^, /, '').trim() || 'Remote',
+            description: job.job_description,
+            jobType: job.job_employment_type ? mapJobType(job.job_employment_type.toLowerCase()) : 'Full-time',
+            workMode: job.job_is_remote ? 'Remote' : 'On-site',
+            datePosted: job.job_posted_at_datetime_utc || new Date().toISOString(),
+            applyUrl: job.job_apply_link,
+            salary: (job.job_min_salary && job.job_max_salary)
+                ? `$${job.job_min_salary} - $${job.job_max_salary}`
+                : 'Not disclosed',
+            logo: job.employer_logo
         }));
+
+        // 2. Store result in Redis Cache (expire in 1 hour = 3600 seconds)
+        if (formattedJobs.length > 0) {
+            console.log(`Caching ${formattedJobs.length} jobs in Redis`);
+            await redis.set(cacheKey, JSON.stringify(formattedJobs), { ex: 3600 });
+        }
+
+        return formattedJobs;
+
     } catch (error) {
-        console.error('Adzuna API Error:', error.message);
+        console.error('JSearch API Error:', error.message);
+        if (error.response) {
+            console.error('API Response:', error.response.status, error.response.data);
+        }
         return null;
     }
 };
 
-const detectCountry = (loc) => {
-    if (!loc) return 'in';
-    const l = loc.toLowerCase();
-    if (l.includes('usa') || l.includes('united states') || l.includes('us')) return 'us';
-    if (l.includes('uk') || l.includes('united kingdom') || l.includes('london')) return 'gb';
-    if (l.includes('canada')) return 'ca';
-    if (l.includes('australia')) return 'au';
-    return 'in'; // Default to India
-};
+export const fetchJobs = async ({ page = 1, role = '', skills = '', location = '' }) => {
+    // Construct a smart query string for JSearch
+    // e.g. "React Developer in Bangalore, India"
+    let queryParts = [];
+    if (role) queryParts.push(role);
+    if (skills) queryParts.push(skills);
 
-const cleanLocation = (loc, country) => {
-    if (!loc) return '';
-    const countrySuffixes = ['india', 'in', 'usa', 'us', 'united states', 'uk', 'united kingdom', 'gb'];
-    let cleaned = loc.trim().toLowerCase();
+    // JSearch handles natural language queries well
+    let baseQuery = queryParts.join(' ');
 
-    // Remove common country names/suffixes to make 'where' more specific for Adzuna
-    for (const suffix of countrySuffixes) {
-        if (cleaned.endsWith(`, ${suffix}`)) {
-            cleaned = cleaned.slice(0, -(suffix.length + 2)).trim();
-            break;
-        }
-        if (cleaned.endsWith(` ${suffix}`)) {
-            cleaned = cleaned.slice(0, -(suffix.length + 1)).trim();
-            break;
-        }
-    }
-    return cleaned;
-};
+    // Tiered Search Logic with Redis Caching implicitly handling duplicates via cache keys
 
-export const fetchJobs = async ({ page = 1, resultsPerPage = 20, role = '', skills = '', location = '' }) => {
-    const hasCriteria = role || skills || location;
-    const country = detectCountry(location);
-    const cleanedLocation = cleanLocation(location, country);
-
-    // Tier 1: Role/Title AND Location
-    if (role && cleanedLocation) {
-        console.log(`[Tier 1] Searching: "${role}" in "${cleanedLocation}"`);
-        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: role, where: cleanedLocation });
+    // Tier 1: Full Query (Role + Skills + Location)
+    if (baseQuery && location) {
+        const fullQuery = `${baseQuery} in ${location}`;
+        const jobs = await fetchFromJSearch({ query: fullQuery, page });
         if (jobs && jobs.length > 0) return jobs;
     }
 
-    // Tier 2: Role Only (Broadens the search if location was too specific)
-    if (role) {
-        console.log(`[Tier 2] Searching Role Only: "${role}"`);
-        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: role });
+    // Tier 2: Role + Skills (No Location - maybe remote or global)
+    if (baseQuery) {
+        const jobs = await fetchFromJSearch({ query: baseQuery, page });
         if (jobs && jobs.length > 0) return jobs;
     }
 
-    // Tier 3: Skills
-    if (skills) {
-        console.log(`[Tier 3] Searching Skills: "${skills}"`);
-        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: skills.replace(/,/g, ' ') });
+    // Tier 3: Location Only (last resort, generic jobs in area)
+    if (location) {
+        const jobs = await fetchFromJSearch({ query: `Jobs in ${location}`, page });
         if (jobs && jobs.length > 0) return jobs;
     }
 
-    // Tier 4: Location Only
-    if (cleanedLocation) {
-        console.log(`[Tier 4] Searching Location Only: "${cleanedLocation}"`);
-        const jobs = await fetchFromAdzuna({ country, page, resultsPerPage, what: '', where: cleanedLocation });
+    // Tier 4: Fallback to broad "Developer" search if nothing else
+    if (!baseQuery && !location) {
+        console.log('No specific criteria, fetching general Developer jobs');
+        const jobs = await fetchFromJSearch({ query: 'Software Developer', page });
         if (jobs && jobs.length > 0) return jobs;
     }
 
-    // If search criteria were provided but no results found, return empty array
-    if (hasCriteria) {
-        console.warn('All tiers failed for specific criteria.');
-        return [];
-    }
-
-    // If no search criteria provided (initial load), return mock data for demo
+    // Fallback to Mock Data if API fails completely
+    console.warn('JSearch API returned no results or failed. Returning Mock Data as fallback.');
     return getMockJobs();
 };
 

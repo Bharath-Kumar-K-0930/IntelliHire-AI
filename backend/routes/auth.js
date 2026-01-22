@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
+import redis from '../redis/client.js';
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'secret123', {
@@ -66,6 +67,19 @@ export default async function authRoutes(fastify, options) {
                     token: generateToken(user._id),
                     profile: user.profile
                 };
+
+                // Store session in Redis
+                try {
+                    await redis.set(`session:${user._id}`, JSON.stringify({
+                        email: user.email,
+                        createdAt: Date.now(),
+                        lastActive: Date.now()
+                    }), { ex: 60 * 60 * 24 }); // 24 hours
+                } catch (err) {
+                    console.error('Redis Error (Session):', err);
+                }
+
+                return responseData;
             } else {
                 return reply.code(401).send({ error: 'Invalid email or password' });
             }
