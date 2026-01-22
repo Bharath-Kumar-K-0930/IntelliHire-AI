@@ -124,6 +124,8 @@ export const AppProvider = ({ children }) => {
         try {
             const { data } = await api.post('/applications', { job });
             setApplications(prev => [data, ...prev]);
+            // Refresh to ensure sync with backend (Redis/Mongo)
+            fetchApplications();
             return data;
         } catch (error) {
             console.error('Error applying:', error);
