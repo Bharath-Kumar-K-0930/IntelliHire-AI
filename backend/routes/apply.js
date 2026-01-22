@@ -58,23 +58,35 @@ export default async function applyRoutes(fastify, options) {
             const key = `applications:${userId}`;
             try {
                 // Get existing list or empty
-                const cachedApps = await redis.get(key) || [];
-                // Redis might return string if using REST client directly in some modes, but @upstash/redis usually parses JSON.
-                // Just in case, ensuring it's an array
-                const appsList = Array.isArray(cachedApps) ? cachedApps : [];
+                const cachedApps = await redis.get(key);
+                let appsList = [];
 
-                appsList.push({
-                    jobId: job.jobId,
-                    company: job.company,
-                    status: 'Applied',
-                    timeline: {
-                        appliedAt: Date.now(),
-                        interviewAt: null,
-                        offerAt: null
+                if (Array.isArray(cachedApps)) {
+                    appsList = cachedApps;
+                } else if (typeof cachedApps === 'string') {
+                    try {
+                        appsList = JSON.parse(cachedApps);
+                    } catch (e) {
+                        appsList = [];
                     }
-                });
+                }
 
-                await redis.set(key, JSON.stringify(appsList));
+                // Check for duplicates in Redis list to avoid error
+                const isRedisDuplicate = appsList.some(app => app.jobId === job.jobId);
+
+                if (!isRedisDuplicate) {
+                    appsList.push({
+                        jobId: job.jobId,
+                        company: job.company,
+                        status: 'Applied',
+                        timeline: {
+                            appliedAt: Date.now(),
+                            interviewAt: null,
+                            offerAt: null
+                        }
+                    });
+                    await redis.set(key, JSON.stringify(appsList));
+                }
             } catch (redisErr) {
                 console.error('Redis error tracking application:', redisErr);
                 // Don't fail the request if Redis updates fail, as MongoDB is the source of truth
