@@ -69,7 +69,12 @@ export default async function applyRoutes(fastify, options) {
                         appsList = [cachedApps];
                     } else if (typeof cachedApps === 'string') {
                         try {
-                            appsList = JSON.parse(cachedApps);
+                            const parsed = JSON.parse(cachedApps);
+                            if (Array.isArray(parsed)) {
+                                appsList = parsed;
+                            } else if (parsed && typeof parsed === 'object') {
+                                appsList = [parsed];
+                            }
                         } catch (e) {
                             console.warn('Failed to parse Redis applications list', e);
                             appsList = [];
