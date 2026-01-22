@@ -9,13 +9,35 @@ export default async function applyRoutes(fastify, options) {
         const userId = request.headers['x-user-id'];
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            // For guest/demo users, we might want to return empty or mock? 
-            // Let's return empty for now to encourage login.
             return [];
         }
 
         try {
+            // 1. Try fetching from Redis first (Speed)
+            const key = `applications:${userId}`;
+            const cachedApps = await redis.get(key);
+
+            if (cachedApps) {
+                let appsList = [];
+                if (Array.isArray(cachedApps)) appsList = cachedApps;
+                else if (typeof cachedApps === 'string') {
+                    try { appsList = JSON.parse(cachedApps); } catch (e) { }
+                }
+
+                if (Array.isArray(appsList) && appsList.length > 0) {
+                    return appsList;
+                }
+            }
+
+            // 2. Fallback to MongoDB (Reliability)
             const apps = await Application.find({ userId }).sort({ appliedAt: -1 });
+
+            // Optional: Populate Redis if empty?
+            if (apps.length > 0) {
+                // We could cache relevant fields similar to POST structure
+                // But let's keep it simple for now or strictly follow the POST structure
+            }
+
             return apps;
         } catch (error) {
             console.error(error);
