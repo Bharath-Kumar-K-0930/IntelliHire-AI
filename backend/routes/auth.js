@@ -60,7 +60,7 @@ export default async function authRoutes(fastify, options) {
             const user = await User.findOne({ email });
 
             if (user && (await user.matchPassword(password))) {
-                return {
+                const responseData = {
                     _id: user._id,
                     name: user.name,
                     email: user.email,
