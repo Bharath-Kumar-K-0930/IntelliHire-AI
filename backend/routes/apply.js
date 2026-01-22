@@ -127,19 +127,28 @@ export default async function applyRoutes(fastify, options) {
                 if (!Array.isArray(appsList)) appsList = [];
 
                 // Check for duplicates in Redis list to avoid error
-                const isRedisDuplicate = appsList.some(app => app.jobId === safeJobId);
+                const isRedisDuplicate = appsList.some(app => app.job?.jobId === safeJobId || app.jobId === safeJobId);
 
                 if (!isRedisDuplicate) {
-                    appsList.push({
-                        jobId: safeJobId,
-                        company: job.company || job.employer_name || 'Unknown Company',
+                    // Match MongoDB Schema Structure for Frontend Compatibility
+                    const newAppEntry = {
+                        _id: new mongoose.Types.ObjectId().toString(), // Fake ID for keying
+                        userId,
+                        job: {
+                            jobId: safeJobId,
+                            title: job.title || job.job_title || 'Unknown Role',
+                            company: job.company || job.employer_name || 'Unknown Company',
+                            location: job.location || job.job_city || 'Remote',
+                            salary: job.salary,
+                            url: job.applyUrl || job.url || job.job_apply_link,
+                            description: job.description
+                        },
                         status: 'Applied',
-                        timeline: {
-                            appliedAt: Date.now(),
-                            interviewAt: null,
-                            offerAt: null
-                        }
-                    });
+                        appliedAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+
+                    appsList.push(newAppEntry);
                     await redis.set(key, JSON.stringify(appsList));
                 }
             } catch (redisErr) {
