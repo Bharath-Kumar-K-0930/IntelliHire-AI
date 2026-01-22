@@ -18,11 +18,17 @@ const JobCard = ({ job, isBestMatch }) => {
     };
 
     const confirmApply = async (status) => {
-        if (status) {
-            await applyToJob(job);
-            addToast(`Application tracked for ${job.title}`, 'success');
+        try {
+            if (status) {
+                await applyToJob(job);
+                addToast(`Application tracked for ${job.title}`, 'success');
+            }
+        } catch (error) {
+            console.error("Tracking failed", error);
+            // Optional: addToast("Failed to track", "error");
+        } finally {
+            setShowApplyPopup(false);
         }
-        setShowApplyPopup(false);
     };
 
     const getScoreColor = (score) => {
