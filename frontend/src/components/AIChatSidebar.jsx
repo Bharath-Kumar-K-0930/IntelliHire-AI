@@ -72,10 +72,13 @@ const AIChatSidebar = () => {
 
                                 <div className="space-y-2">
                                     {[
-                                        "Find me remote React jobs",
-                                        "How can I improve my resume?",
-                                        "Show me high salary jobs in NY",
-                                        "What skills are in demand?"
+                                        "Show me remote React jobs",
+                                        "Give me UX jobs requiring Figma",
+                                        "Which jobs have highest match scores?",
+                                        "Find senior roles posted this week",
+                                        "Where do I see my applications?",
+                                        "How do I upload my resume?",
+                                        "How does matching work?"
                                     ].map((q, i) => (
                                         <button
                                             key={i}
