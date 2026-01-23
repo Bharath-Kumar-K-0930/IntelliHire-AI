@@ -100,10 +100,15 @@ export const fetchJobs = async ({ page = 1, role = '', skills = '', location = '
         const fullQuery = `${baseQuery} in ${location}`;
         const jobs = await fetchFromJSearch({ query: fullQuery, page });
         if (jobs && jobs.length > 0) return jobs;
+
+        // STRICT MODE: If location was provided but Tier 1 found nothing, 
+        // we DO NOT fall back to global role search (Tier 2).
+        // instead, we try Tier 3 (Location Only) or return empty.
     }
 
-    // Tier 2: Role + Skills (No Location - maybe remote or global)
-    if (baseQuery) {
+    // Tier 2: Role + Skills (No Location specified)
+    // ONLY run this if location is NOT provided.
+    if (baseQuery && !location) {
         const jobs = await fetchFromJSearch({ query: baseQuery, page });
         if (jobs && jobs.length > 0) return jobs;
     }
@@ -112,6 +117,9 @@ export const fetchJobs = async ({ page = 1, role = '', skills = '', location = '
     if (location) {
         const jobs = await fetchFromJSearch({ query: `Jobs in ${location}`, page });
         if (jobs && jobs.length > 0) return jobs;
+
+        // If we are here, location matched nothing. Return empty to be strict.
+        return [];
     }
 
     // Tier 4: Fallback to broad "Developer" search if nothing else
