@@ -50,32 +50,32 @@ const ApplicationsDashboard = () => {
     }
 
     return (
-        <div className="flex-1 lg:ml-64 bg-[#f3f2ef] min-h-screen">
+        <div className="flex-1 lg:ml-64 bg-[#f3f2ef] dark:bg-slate-900 min-h-screen">
             <div className="p-8 max-w-7xl mx-auto">
                 <header className="mb-10">
-                    <h1 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">Application Tracker</h1>
-                    <p className="text-slate-500 font-medium text-lg">Manage your job search pipeline efficiently.</p>
+                    <h1 className="text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Application Tracker</h1>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">Manage your job search pipeline efficiently.</p>
                 </header>
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
-                    <div onClick={() => setFilter('All')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'All' ? 'bg-slate-900 dark:bg-slate-700 text-white border-slate-900 dark:border-slate-700 shadow-xl' : 'bg-white border-slate-200 hover:border-slate-300'}`}>
+                    <div onClick={() => setFilter('All')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'All' ? 'bg-slate-900 dark:bg-slate-700 text-white border-slate-900 dark:border-slate-700 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-900 dark:text-white'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Total</div>
                         <div className="text-3xl font-black">{stats.total}</div>
                     </div>
-                    <div onClick={() => setFilter('Applied')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Applied' ? 'bg-blue-600 text-white border-blue-600 shadow-xl' : 'bg-white border-slate-200 hover:border-blue-200'}`}>
+                    <div onClick={() => setFilter('Applied')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Applied' ? 'bg-blue-600 text-white border-blue-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-blue-200 text-slate-900 dark:text-white'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Applied</div>
                         <div className="text-3xl font-black">{stats.applied}</div>
                     </div>
-                    <div onClick={() => setFilter('Interview')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Interview' ? 'bg-purple-600 text-white border-purple-600 shadow-xl' : 'bg-white border-slate-200 hover:border-purple-200'}`}>
+                    <div onClick={() => setFilter('Interview')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Interview' ? 'bg-purple-600 text-white border-purple-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-purple-200 text-slate-900 dark:text-white'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Interview</div>
                         <div className="text-3xl font-black">{stats.interview}</div>
                     </div>
-                    <div onClick={() => setFilter('Offer')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Offer' ? 'bg-green-600 text-white border-green-600 shadow-xl' : 'bg-white border-slate-200 hover:border-green-200'}`}>
+                    <div onClick={() => setFilter('Offer')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Offer' ? 'bg-green-600 text-white border-green-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-green-200 text-slate-900 dark:text-white'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Offers</div>
                         <div className="text-3xl font-black">{stats.offer}</div>
                     </div>
-                    <div onClick={() => setFilter('Rejected')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Rejected' ? 'bg-red-600 text-white border-red-600 shadow-xl' : 'bg-white border-slate-200 hover:border-red-200'}`}>
+                    <div onClick={() => setFilter('Rejected')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Rejected' ? 'bg-red-600 text-white border-red-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-red-200 text-slate-900 dark:text-white'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Rejected</div>
                         <div className="text-3xl font-black">{stats.rejected}</div>
                     </div>
