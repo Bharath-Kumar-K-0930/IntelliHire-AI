@@ -305,6 +305,259 @@ const ProfilePage = () => {
                     </div>
                 </div>
 
+                {/* Education */}
+                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <GraduationCap className="w-5 h-5 text-primary-600" />
+                            Education
+                        </h2>
+                        {isEditing && (
+                            <button
+                                onClick={() => addArrayItem('education', { degree: '', institution: '', year: '', grade: '' })}
+                                className="text-primary-600 hover:text-primary-700 font-bold text-sm flex items-center gap-1"
+                            >
+                                <Plus className="w-4 h-4" /> Add Education
+                            </button>
+                        )}
+                    </div>
+                    <div className="space-y-4">
+                        {profile.education.length === 0 ? (
+                            <p className="text-slate-400 text-sm italic">No education information added yet. Upload your resume to auto-populate this section.</p>
+                        ) : (
+                            profile.education.map((edu, index) => (
+                                <div key={index} className="border border-slate-200 rounded-xl p-4 hover:border-primary-200 transition-all">
+                                    {isEditing ? (
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-2">
+                                                <div className="flex-1 space-y-3">
+                                                    <input
+                                                        type="text"
+                                                        value={edu.degree || ''}
+                                                        onChange={(e) => updateArrayItem('education', index, { ...edu, degree: e.target.value })}
+                                                        placeholder="Degree (e.g. B.Tech in Computer Science)"
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        value={edu.institution || ''}
+                                                        onChange={(e) => updateArrayItem('education', index, { ...edu, institution: e.target.value })}
+                                                        placeholder="Institution Name"
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                    />
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={edu.year || ''}
+                                                            onChange={(e) => updateArrayItem('education', index, { ...edu, year: e.target.value })}
+                                                            placeholder="Year (e.g. 2020-2024)"
+                                                            className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            value={edu.grade || ''}
+                                                            onChange={(e) => updateArrayItem('education', index, { ...edu, grade: e.target.value })}
+                                                            placeholder="GPA/Grade (optional)"
+                                                            className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => removeArrayItem('education', index)}
+                                                    className="text-red-600 hover:text-red-700 p-2"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <h3 className="font-bold text-slate-900">{edu.degree}</h3>
+                                            <p className="text-sm text-slate-600 mt-1">{edu.institution}</p>
+                                            <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+                                                <span>{edu.year}</span>
+                                                {edu.grade && <span>• {edu.grade}</span>}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Experience */}
+                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <Briefcase className="w-5 h-5 text-primary-600" />
+                            Work Experience
+                        </h2>
+                        {isEditing && (
+                            <button
+                                onClick={() => addArrayItem('experience', { title: '', company: '', duration: '', description: '', location: '' })}
+                                className="text-primary-600 hover:text-primary-700 font-bold text-sm flex items-center gap-1"
+                            >
+                                <Plus className="w-4 h-4" /> Add Experience
+                            </button>
+                        )}
+                    </div>
+                    <div className="space-y-4">
+                        {profile.experience.length === 0 ? (
+                            <p className="text-slate-400 text-sm italic">No work experience added yet. Upload your resume to auto-populate this section.</p>
+                        ) : (
+                            profile.experience.map((exp, index) => (
+                                <div key={index} className="border border-slate-200 rounded-xl p-4 hover:border-primary-200 transition-all">
+                                    {isEditing ? (
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-2">
+                                                <div className="flex-1 space-y-3">
+                                                    <input
+                                                        type="text"
+                                                        value={exp.title || ''}
+                                                        onChange={(e) => updateArrayItem('experience', index, { ...exp, title: e.target.value })}
+                                                        placeholder="Job Title"
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold"
+                                                    />
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={exp.company || ''}
+                                                            onChange={(e) => updateArrayItem('experience', index, { ...exp, company: e.target.value })}
+                                                            placeholder="Company Name"
+                                                            className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            value={exp.location || ''}
+                                                            onChange={(e) => updateArrayItem('experience', index, { ...exp, location: e.target.value })}
+                                                            placeholder="Location (optional)"
+                                                            className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                        />
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        value={exp.duration || ''}
+                                                        onChange={(e) => updateArrayItem('experience', index, { ...exp, duration: e.target.value })}
+                                                        placeholder="Duration (e.g. Jan 2022 - Present)"
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                    />
+                                                    <textarea
+                                                        value={exp.description || ''}
+                                                        onChange={(e) => updateArrayItem('experience', index, { ...exp, description: e.target.value })}
+                                                        placeholder="Key responsibilities and achievements..."
+                                                        rows={3}
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                    />
+                                                </div>
+                                                <button
+                                                    onClick={() => removeArrayItem('experience', index)}
+                                                    className="text-red-600 hover:text-red-700 p-2"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <h3 className="font-bold text-slate-900">{exp.title}</h3>
+                                            <p className="text-sm text-primary-600 mt-1">{exp.company}</p>
+                                            <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+                                                <span>{exp.duration}</span>
+                                                {exp.location && <><span>•</span><span>{exp.location}</span></>}
+                                            </div>
+                                            {exp.description && (
+                                                <p className="text-sm text-slate-600 mt-3 leading-relaxed">{exp.description}</p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Internships */}
+                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <Award className="w-5 h-5 text-primary-600" />
+                            Internships
+                        </h2>
+                        {isEditing && (
+                            <button
+                                onClick={() => addArrayItem('internships', { title: '', company: '', duration: '', description: '', location: '' })}
+                                className="text-primary-600 hover:text-primary-700 font-bold text-sm flex items-center gap-1"
+                            >
+                                <Plus className="w-4 h-4" /> Add Internship
+                            </button>
+                        )}
+                    </div>
+                    <div className="space-y-4">
+                        {profile.internships.length === 0 ? (
+                            <p className="text-slate-400 text-sm italic">No internships added yet. Upload your resume to auto-populate this section.</p>
+                        ) : (
+                            profile.internships.map((intern, index) => (
+                                <div key={index} className="border border-slate-200 rounded-xl p-4 hover:border-primary-200 transition-all">
+                                    {isEditing ? (
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-2">
+                                                <div className="flex-1 space-y-3">
+                                                    <input
+                                                        type="text"
+                                                        value={intern.title || ''}
+                                                        onChange={(e) => updateArrayItem('internships', index, { ...intern, title: e.target.value })}
+                                                        placeholder="Role/Position"
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold"
+                                                    />
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={intern.company || ''}
+                                                            onChange={(e) => updateArrayItem('internships', index, { ...intern, company: e.target.value })}
+                                                            placeholder="Company Name"
+                                                            className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            value={intern.duration || ''}
+                                                            onChange={(e) => updateArrayItem('internships', index, { ...intern, duration: e.target.value })}
+                                                            placeholder="Duration"
+                                                            className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                        />
+                                                    </div>
+                                                    <textarea
+                                                        value={intern.description || ''}
+                                                        onChange={(e) => updateArrayItem('internships', index, { ...intern, description: e.target.value })}
+                                                        placeholder="Work done and learnings..."
+                                                        rows={2}
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                                                    />
+                                                </div>
+                                                <button
+                                                    onClick={() => removeArrayItem('internships', index)}
+                                                    className="text-red-600 hover:text-red-700 p-2"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <h3 className="font-bold text-slate-900">{intern.title}</h3>
+                                            <p className="text-sm text-primary-600 mt-1">{intern.company}</p>
+                                            <p className="text-xs text-slate-500 mt-2">{intern.duration}</p>
+                                            {intern.description && (
+                                                <p className="text-sm text-slate-600 mt-3 leading-relaxed">{intern.description}</p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
                 {/* Languages & Hobbies */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">

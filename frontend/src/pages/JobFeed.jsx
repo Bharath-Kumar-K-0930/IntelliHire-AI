@@ -338,9 +338,11 @@ const JobFeed = () => {
                                     )}
                                 </div>
                             ) : (
-                                jobs.map((job) => (
-                                    <JobCard key={job.jobId} job={job} />
-                                ))
+                                jobs
+                                    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
+                                    .map((job) => (
+                                        <JobCard key={job.jobId} job={job} />
+                                    ))
                             )}
                         </div>
                     </div>
