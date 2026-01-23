@@ -134,9 +134,12 @@ export const getRuleBasedResponse = (message) => {
         if (text.includes('backend')) payload.role = 'backend';
         if (text.includes('full stack') || text.includes('fullstack')) payload.role = 'full stack';
         if (text.includes('designer')) payload.role = 'designer';
+        if (text.includes('hr') || text.includes('human resource')) payload.role = 'hr';
+        if (text.includes('manager')) payload.role = 'manager';
+        if (text.includes('sales')) payload.role = 'sales';
 
         return {
-            text: `Sure! Searching for ${payload.role || 'relevant'} jobs${payload.location ? ' in ' + payload.location : ''}${skills.length ? ' with skills: ' + skills.join(', ') : ''}.`,
+            text: `I've filtered the job feed for ${payload.role ? payload.role.toUpperCase() + ' ' : ''}roles${payload.location ? ' in ' + payload.location : ''}${skills.length ? ' requiring: ' + skills.join(', ') : ''}. If no jobs appear, please try broadening your search.`,
             action: { type: 'FILTER', payload }
         };
     }
