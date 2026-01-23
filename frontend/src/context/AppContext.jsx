@@ -134,14 +134,25 @@ export const AppProvider = ({ children }) => {
     };
 
     const updateApplicationStatus = async (id, status) => {
+        // 1. Snapshot previous state for rollback
+        const previousApps = [...applications];
+
+        // 2. Optimistic Update: Update UI immediately
+        setApplications(prev => prev.map(app =>
+            app._id === id ? { ...app, status, updatedAt: new Date().toISOString() } : app
+        ));
+
         try {
-            const { data } = await api.patch(`/applications/${id}`, { status });
-            // Optimistic update
-            setApplications(prev => prev.map(app => app._id === id ? data : app));
-            // Force refresh to ensure sync with Redis/DB
-            await fetchApplications();
+            // 3. Perform API Call
+            await api.patch(`/applications/${id}`, { status });
+
+            // 4. Background refresh to ensure consistency (optional, but good practice)
+            fetchApplications();
         } catch (error) {
             console.error('Error updating status:', error);
+            // 5. Rollback on error
+            setApplications(previousApps);
+            alert('Failed to update status. Please try again.');
         }
     };
 
