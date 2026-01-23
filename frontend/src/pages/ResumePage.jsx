@@ -80,7 +80,7 @@ const ResumePage = () => {
     };
 
     return (
-        <div className="flex-1 lg:ml-64 xl:mr-96 pt-20 lg:pt-0 bg-[#f3f2ef] dark:bg-slate-900">
+        <div className="flex-1 lg:ml-64 pt-20 lg:pt-0 bg-[#f3f2ef] dark:bg-slate-900">
             <div className="max-w-4xl mx-auto p-4 lg:p-10">
                 <header className="mb-10">
                     <div className="flex items-center gap-2 mb-2">

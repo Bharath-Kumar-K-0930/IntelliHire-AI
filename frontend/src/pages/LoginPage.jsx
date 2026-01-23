@@ -33,11 +33,11 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#f3f2ef] flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+        <div className="min-h-screen bg-[#f3f2ef] dark:bg-slate-900 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md p-8">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-black text-slate-900 mb-2">Welcome Back</h1>
-                    <p className="text-slate-500 font-medium">Sign in to your IntelliHire account</p>
+                    <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Welcome Back</h1>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">Sign in to your IntelliHire account</p>
                 </div>
 
                 {error && (
@@ -48,24 +48,24 @@ const LoginPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Email Address</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-2">Email Address</label>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-primary-500 focus:bg-white transition-all"
+                            className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 font-bold text-slate-900 dark:text-white outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-600 transition-all"
                             placeholder="john@example.com"
                         />
                     </div>
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Password</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-2">Password</label>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-primary-500 focus:bg-white transition-all"
+                            className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 font-bold text-slate-900 dark:text-white outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:bg-white dark:focus:bg-slate-600 transition-all"
                             placeholder="••••••••"
                         />
                     </div>
@@ -83,8 +83,8 @@ const LoginPage = () => {
                     </button>
                 </form>
 
-                <div className="mt-8 pt-8 border-t border-slate-100">
-                    <button className="w-full bg-white border-2 border-slate-200 text-slate-700 font-bold py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-50 transition-all relative group overflow-hidden">
+                <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-700">
+                    <button className="w-full bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all relative group overflow-hidden">
                         <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-6 h-6" alt="Google" />
                         <span>Sign in with Google</span>
                         <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -93,7 +93,7 @@ const LoginPage = () => {
                     </button>
                 </div>
 
-                <p className="mt-8 text-center text-slate-500 font-medium text-sm">
+                <p className="mt-8 text-center text-slate-500 dark:text-slate-400 font-medium text-sm">
                     Don't have an account?{' '}
                     <Link to="/register" className="text-primary-600 font-bold hover:underline">
                         Create Account

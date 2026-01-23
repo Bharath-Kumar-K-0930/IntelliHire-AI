@@ -84,12 +84,12 @@ const ApplicationsDashboard = () => {
                 {/* Timeline List */}
                 <div className="space-y-4">
                     {filteredApps.length === 0 ? (
-                        <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-300">
-                            <p className="text-slate-400 font-medium">No applications found in this stage.</p>
+                        <div className="text-center py-20 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-600">
+                            <p className="text-slate-400 dark:text-slate-500 font-medium">No applications found in this stage.</p>
                         </div>
                     ) : (
                         filteredApps.map((app) => (
-                            <div key={app._id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between group">
+                            <div key={app._id} className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between group">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
                                         <h3 className="text-xl font-bold text-slate-900 dark:text-white">{app.job.title}</h3>
@@ -97,12 +97,12 @@ const ApplicationsDashboard = () => {
                                             {app.status}
                                         </span>
                                     </div>
-                                    <div className="text-slate-500 font-medium flex items-center gap-2 text-sm">
+                                    <div className="text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2 text-sm">
                                         <span>{app.job.company}</span>
                                         <span>•</span>
                                         <span>{app.job.location}</span>
                                         <span>•</span>
-                                        <span className="text-slate-400">Applied {new Date(app.appliedAt).toLocaleDateString()}</span>
+                                        <span className="text-slate-400 dark:text-slate-500">Applied {new Date(app.appliedAt).toLocaleDateString()}</span>
                                     </div>
                                 </div>
 
@@ -110,7 +110,7 @@ const ApplicationsDashboard = () => {
                                     <select
                                         value={app.status}
                                         onChange={(e) => updateApplicationStatus(app._id, e.target.value)}
-                                        className="bg-slate-50 dark:bg-slate-700 border border-slate-200 text-slate-700 dark:text-slate-300 text-sm font-bold rounded-xl px-4 py-3 outline-none focus:border-primary-500 cursor-pointer w-full lg:w-48"
+                                        className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-sm font-bold rounded-xl px-4 py-3 outline-none focus:border-primary-500 dark:focus:border-primary-400 cursor-pointer w-full lg:w-48"
                                     >
                                         <option value="Applied">Applied</option>
                                         <option value="Interview">Interview</option>
