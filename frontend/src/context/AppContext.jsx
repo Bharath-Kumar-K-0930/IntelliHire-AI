@@ -136,7 +136,10 @@ export const AppProvider = ({ children }) => {
     const updateApplicationStatus = async (id, status) => {
         try {
             const { data } = await api.patch(`/applications/${id}`, { status });
+            // Optimistic update
             setApplications(prev => prev.map(app => app._id === id ? data : app));
+            // Force refresh to ensure sync with Redis/DB
+            await fetchApplications();
         } catch (error) {
             console.error('Error updating status:', error);
         }
