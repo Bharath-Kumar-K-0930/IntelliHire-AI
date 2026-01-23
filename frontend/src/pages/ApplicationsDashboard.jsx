@@ -59,23 +59,23 @@ const ApplicationsDashboard = () => {
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
-                    <div onClick={() => setFilter('All')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'All' ? 'bg-slate-900 text-white border-slate-900 shadow-xl' : 'bg-white border-slate-200 hover:border-slate-300'}`}>
+                    <div onClick={() => setFilter('All')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'All' ? 'bg-slate-900 dark:bg-slate-700 text-white border-slate-900 dark:border-slate-700 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 hover:border-slate-300'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Total</div>
                         <div className="text-3xl font-black">{stats.total}</div>
                     </div>
-                    <div onClick={() => setFilter('Applied')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Applied' ? 'bg-blue-600 text-white border-blue-600 shadow-xl' : 'bg-white border-slate-200 hover:border-blue-200'}`}>
+                    <div onClick={() => setFilter('Applied')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Applied' ? 'bg-blue-600 text-white border-blue-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 hover:border-blue-200'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Applied</div>
                         <div className="text-3xl font-black">{stats.applied}</div>
                     </div>
-                    <div onClick={() => setFilter('Interview')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Interview' ? 'bg-purple-600 text-white border-purple-600 shadow-xl' : 'bg-white border-slate-200 hover:border-purple-200'}`}>
+                    <div onClick={() => setFilter('Interview')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Interview' ? 'bg-purple-600 text-white border-purple-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 hover:border-purple-200'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Interview</div>
                         <div className="text-3xl font-black">{stats.interview}</div>
                     </div>
-                    <div onClick={() => setFilter('Offer')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Offer' ? 'bg-green-600 text-white border-green-600 shadow-xl' : 'bg-white border-slate-200 hover:border-green-200'}`}>
+                    <div onClick={() => setFilter('Offer')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Offer' ? 'bg-green-600 text-white border-green-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 hover:border-green-200'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Offers</div>
                         <div className="text-3xl font-black">{stats.offer}</div>
                     </div>
-                    <div onClick={() => setFilter('Rejected')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Rejected' ? 'bg-red-600 text-white border-red-600 shadow-xl' : 'bg-white border-slate-200 hover:border-red-200'}`}>
+                    <div onClick={() => setFilter('Rejected')} className={`cursor-pointer p-4 rounded-2xl border transition-all ${filter === 'Rejected' ? 'bg-red-600 text-white border-red-600 shadow-xl' : 'bg-white dark:bg-slate-800 border-slate-200 hover:border-red-200'}`}>
                         <div className="text-sm font-bold uppercase tracking-wider opacity-70 mb-1">Rejected</div>
                         <div className="text-3xl font-black">{stats.rejected}</div>
                     </div>
@@ -92,7 +92,7 @@ const ApplicationsDashboard = () => {
                             <div key={app._id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between group">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <h3 className="text-xl font-bold text-slate-900">{app.job.title}</h3>
+                                        <h3 className="text-xl font-bold text-slate-900 dark:text-white\">{app.job.title}</h3>
                                         <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${getStatusColor(app.status)}`}>
                                             {app.status}
                                         </span>
@@ -110,7 +110,7 @@ const ApplicationsDashboard = () => {
                                     <select
                                         value={app.status}
                                         onChange={(e) => updateApplicationStatus(app._id, e.target.value)}
-                                        className="bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold rounded-xl px-4 py-3 outline-none focus:border-primary-500 cursor-pointer w-full lg:w-48"
+                                        className="bg-slate-50 dark:bg-slate-700 border border-slate-200 text-slate-700 dark:text-slate-300 text-sm font-bold rounded-xl px-4 py-3 outline-none focus:border-primary-500 cursor-pointer w-full lg:w-48"
                                     >
                                         <option value="Applied">Applied</option>
                                         <option value="Interview">Interview</option>
@@ -137,3 +137,4 @@ const ApplicationsDashboard = () => {
 };
 
 export default ApplicationsDashboard;
+

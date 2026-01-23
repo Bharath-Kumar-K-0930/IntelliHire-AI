@@ -95,7 +95,7 @@ const ResumePage = () => {
                     <div className="space-y-6">
                         <label
                             htmlFor="resume-upload"
-                            className="bg-white border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-8 lg:p-12 text-center group hover:border-primary-500/50 hover:bg-primary-50/10 transition-all cursor-pointer rounded-2xl shadow-sm"
+                            className="bg-white dark:bg-slate-800 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-8 lg:p-12 text-center group hover:border-primary-500/50 hover:bg-primary-50/10 transition-all cursor-pointer rounded-2xl shadow-sm"
                         >
                             <div className="w-20 h-20 bg-primary-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-all border border-primary-100">
                                 <Upload className="w-10 h-10 text-primary-600" />
@@ -140,11 +140,11 @@ const ResumePage = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white border border-slate-200 rounded-2xl flex flex-col h-[700px] lg:h-[800px] shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-slate-800 border border-slate-200 rounded-2xl flex flex-col h-[700px] lg:h-[800px] shadow-sm overflow-hidden">
                         <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <FileText className="w-6 h-6 text-primary-600" />
-                                <h3 className="text-lg font-bold text-slate-900">Extracted Insights</h3>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white\">Extracted Insights</h3>
                             </div>
                             {profile && (
                                 <button
@@ -186,7 +186,7 @@ const ResumePage = () => {
                                                 <Briefcase className="w-3 h-3" />
                                                 Role
                                             </h4>
-                                            <p className="font-medium text-slate-700">{profile.role}</p>
+                                            <p className="font-medium text-slate-700 dark:text-slate-300\">{profile.role}</p>
                                         </div>
                                     )}
 
@@ -209,19 +209,19 @@ const ResumePage = () => {
                                                 {profile.contact.email && (
                                                     <div className="flex items-center gap-2 text-sm">
                                                         <Mail className="w-4 h-4 text-slate-400" />
-                                                        <span className="text-slate-700">{profile.contact.email}</span>
+                                                        <span className="text-slate-700 dark:text-slate-300\">{profile.contact.email}</span>
                                                     </div>
                                                 )}
                                                 {profile.contact.phone && (
                                                     <div className="flex items-center gap-2 text-sm">
                                                         <Phone className="w-4 h-4 text-slate-400" />
-                                                        <span className="text-slate-700">{profile.contact.phone}</span>
+                                                        <span className="text-slate-700 dark:text-slate-300\">{profile.contact.phone}</span>
                                                     </div>
                                                 )}
                                                 {profile.contact.location && (
                                                     <div className="flex items-center gap-2 text-sm">
                                                         <MapPin className="w-4 h-4 text-slate-400" />
-                                                        <span className="text-slate-700">{profile.contact.location}</span>
+                                                        <span className="text-slate-700 dark:text-slate-300\">{profile.contact.location}</span>
                                                     </div>
                                                 )}
                                                 {profile.contact.linkedin && (
@@ -310,7 +310,7 @@ const ResumePage = () => {
                                                                     value={exp.title || exp}
                                                                     onChange={(e) => updateArrayItem('experience', i, typeof exp === 'string' ? e.target.value : { ...exp, title: e.target.value })}
                                                                     placeholder="Job Title"
-                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200"
+                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200 dark:border-slate-700\"
                                                                 />
                                                                 {typeof exp === 'object' && (
                                                                     <>
@@ -319,14 +319,14 @@ const ResumePage = () => {
                                                                             value={exp.company || ''}
                                                                             onChange={(e) => updateArrayItem('experience', i, { ...exp, company: e.target.value })}
                                                                             placeholder="Company"
-                                                                            className="w-full px-2 py-1 text-sm rounded border border-slate-200"
+                                                                            className="w-full px-2 py-1 text-sm rounded border border-slate-200 dark:border-slate-700\"
                                                                         />
                                                                         <input
                                                                             type="text"
                                                                             value={exp.duration || ''}
                                                                             onChange={(e) => updateArrayItem('experience', i, { ...exp, duration: e.target.value })}
                                                                             placeholder="Duration"
-                                                                            className="w-full px-2 py-1 text-sm rounded border border-slate-200"
+                                                                            className="w-full px-2 py-1 text-sm rounded border border-slate-200 dark:border-slate-700\"
                                                                         />
                                                                     </>
                                                                 )}
@@ -336,13 +336,13 @@ const ResumePage = () => {
                                                                 </button>
                                                             </div>
                                                         ) : (
-                                                            <div className="text-sm text-slate-700">
+                                                            <div className="text-sm text-slate-700 dark:text-slate-300\">
                                                                 {typeof exp === 'string' ? (
                                                                     <p className="font-medium">{exp}</p>
                                                                 ) : (
                                                                     <>
-                                                                        <p className="font-bold text-slate-900">{exp.title}</p>
-                                                                        {exp.company && <p className="text-slate-600">{exp.company}</p>}
+                                                                        <p className="font-bold text-slate-900 dark:text-white\">{exp.title}</p>
+                                                                        {exp.company && <p className="text-slate-600 dark:text-slate-400\">{exp.company}</p>}
                                                                         {exp.duration && <p className="text-xs text-slate-500">{exp.duration}</p>}
                                                                         {exp.description && <p className="text-xs mt-1">{exp.description}</p>}
                                                                     </>
@@ -382,7 +382,7 @@ const ResumePage = () => {
                                                                     value={edu.degree || edu}
                                                                     onChange={(e) => updateArrayItem('education', i, typeof edu === 'string' ? e.target.value : { ...edu, degree: e.target.value })}
                                                                     placeholder="Degree"
-                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200"
+                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200 dark:border-slate-700\"
                                                                 />
                                                                 <button onClick={() => removeArrayItem('education', i)} className="text-red-600 text-xs font-bold flex items-center gap-1">
                                                                     <Trash2 className="w-3 h-3" />
@@ -390,13 +390,13 @@ const ResumePage = () => {
                                                                 </button>
                                                             </div>
                                                         ) : (
-                                                            <div className="text-slate-700">
+                                                            <div className="text-slate-700 dark:text-slate-300\">
                                                                 {typeof edu === 'string' ? (
                                                                     <p className="font-medium">{edu}</p>
                                                                 ) : (
                                                                     <>
-                                                                        <p className="font-bold text-slate-900">{edu.degree}</p>
-                                                                        {edu.institution && <p className="text-slate-600">{edu.institution}</p>}
+                                                                        <p className="font-bold text-slate-900 dark:text-white\">{edu.degree}</p>
+                                                                        {edu.institution && <p className="text-slate-600 dark:text-slate-400\">{edu.institution}</p>}
                                                                         {edu.year && <p className="text-xs text-slate-500">{edu.year}</p>}
                                                                     </>
                                                                 )}
@@ -435,7 +435,7 @@ const ResumePage = () => {
                                                                     value={proj.title || proj}
                                                                     onChange={(e) => updateArrayItem('projects', i, typeof proj === 'string' ? e.target.value : { ...proj, title: e.target.value })}
                                                                     placeholder="Project Title"
-                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200"
+                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200 dark:border-slate-700\"
                                                                 />
                                                                 <button onClick={() => removeArrayItem('projects', i)} className="text-red-600 text-xs font-bold flex items-center gap-1">
                                                                     <Trash2 className="w-3 h-3" />
@@ -443,8 +443,8 @@ const ResumePage = () => {
                                                                 </button>
                                                             </div>
                                                         ) : (
-                                                            <div className="text-slate-700">
-                                                                <p className="font-bold text-slate-900">{proj.title || proj}</p>
+                                                            <div className="text-slate-700 dark:text-slate-300\">
+                                                                <p className="font-bold text-slate-900 dark:text-white\">{proj.title || proj}</p>
                                                                 {proj.description && <p className="text-xs mt-1">{proj.description}</p>}
                                                                 {proj.techStack && proj.techStack.length > 0 && (
                                                                     <div className="flex flex-wrap gap-1 mt-2">
@@ -488,7 +488,7 @@ const ResumePage = () => {
                                                                     value={intern.title || intern}
                                                                     onChange={(e) => updateArrayItem('internships', i, typeof intern === 'string' ? e.target.value : { ...intern, title: e.target.value })}
                                                                     placeholder="Role"
-                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200"
+                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200 dark:border-slate-700\"
                                                                 />
                                                                 <button onClick={() => removeArrayItem('internships', i)} className="text-red-600 text-xs font-bold flex items-center gap-1">
                                                                     <Trash2 className="w-3 h-3" />
@@ -496,9 +496,9 @@ const ResumePage = () => {
                                                                 </button>
                                                             </div>
                                                         ) : (
-                                                            <div className="text-slate-700">
-                                                                <p className="font-bold text-slate-900">{intern.title || intern}</p>
-                                                                {intern.company && <p className="text-slate-600">{intern.company}</p>}
+                                                            <div className="text-slate-700 dark:text-slate-300\">
+                                                                <p className="font-bold text-slate-900 dark:text-white\">{intern.title || intern}</p>
+                                                                {intern.company && <p className="text-slate-600 dark:text-slate-400\">{intern.company}</p>}
                                                                 {intern.duration && <p className="text-xs text-slate-500">{intern.duration}</p>}
                                                             </div>
                                                         )}
@@ -535,7 +535,7 @@ const ResumePage = () => {
                                                                     value={cert.name || cert}
                                                                     onChange={(e) => updateArrayItem('certifications', i, typeof cert === 'string' ? e.target.value : { ...cert, name: e.target.value })}
                                                                     placeholder="Certification Name"
-                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200"
+                                                                    className="w-full px-2 py-1 text-sm rounded border border-slate-200 dark:border-slate-700\"
                                                                 />
                                                                 <button onClick={() => removeArrayItem('certifications', i)} className="text-red-600 text-xs font-bold flex items-center gap-1">
                                                                     <Trash2 className="w-3 h-3" />
@@ -543,9 +543,9 @@ const ResumePage = () => {
                                                                 </button>
                                                             </div>
                                                         ) : (
-                                                            <div className="text-slate-700">
-                                                                <p className="font-bold text-slate-900">{cert.name || cert}</p>
-                                                                {cert.issuer && <p className="text-slate-600">{cert.issuer}</p>}
+                                                            <div className="text-slate-700 dark:text-slate-300\">
+                                                                <p className="font-bold text-slate-900 dark:text-white\">{cert.name || cert}</p>
+                                                                {cert.issuer && <p className="text-slate-600 dark:text-slate-400\">{cert.issuer}</p>}
                                                                 {cert.date && <p className="text-xs text-slate-500">{cert.date}</p>}
                                                             </div>
                                                         )}
@@ -670,3 +670,4 @@ const ResumePage = () => {
 };
 
 export default ResumePage;
+

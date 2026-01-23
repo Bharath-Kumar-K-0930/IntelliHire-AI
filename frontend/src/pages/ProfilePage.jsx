@@ -132,13 +132,13 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="flex-1 lg:ml-64 bg-[#f3f2ef] min-h-screen">
+        <div className="flex-1 lg:ml-64 bg-[#f3f2ef] dark:bg-slate-900 min-h-screen">
             <div className="max-w-5xl mx-auto p-4 lg:p-12">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h1 className="text-4xl font-black text-slate-900 mb-2">My Profile</h1>
-                        <p className="text-slate-500">Manage your personal information and preferences</p>
+                        <h1 className="text-4xl font-black text-slate-900 dark:text-white mb-2">My Profile</h1>
+                        <p className="text-slate-500 dark:text-slate-400">Manage your personal information and preferences</p>
                     </div>
                     <button
                         onClick={() => isEditing ? handleSaveProfile() : setIsEditing(true)}
@@ -151,24 +151,24 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Basic Info */}
-                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
-                    <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                        <User className="w-5 h-5 text-primary-600" />
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 mb-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <User className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                         Basic Information
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">Full Name</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 dark:text-slate-400 mb-2 block">Full Name</label>
                             <input
                                 type="text"
                                 value={profile.name}
                                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                                 disabled={!isEditing}
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 dark:focus:border-primary-400 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white"
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">Email</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">Email</label>
                             <input
                                 type="email"
                                 value={profile.email}
@@ -177,100 +177,100 @@ const ProfilePage = () => {
                             />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">Current Role</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">Current Role</label>
                             <input
                                 type="text"
                                 value={profile.role}
                                 onChange={(e) => setProfile({ ...profile, role: e.target.value })}
                                 disabled={!isEditing}
                                 placeholder="e.g. Full Stack Developer"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white\"
                             />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">Professional Summary</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">Professional Summary</label>
                             <textarea
                                 value={profile.summary}
                                 onChange={(e) => setProfile({ ...profile, summary: e.target.value })}
                                 disabled={!isEditing}
                                 rows={3}
                                 placeholder="Brief professional summary..."
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white\"
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Contact Information */}
-                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
-                    <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                        <Mail className="w-5 h-5 text-primary-600" />
+                <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 mb-6 shadow-sm border border-slate-200 dark:border-slate-700\">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <Mail className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                         Contact Information
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">Phone</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">Phone</label>
                             <input
                                 type="tel"
                                 value={profile.contact.phone || ''}
                                 onChange={(e) => setProfile({ ...profile, contact: { ...profile.contact, phone: e.target.value } })}
                                 disabled={!isEditing}
                                 placeholder="+1234567890"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white\"
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">Location</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">Location</label>
                             <input
                                 type="text"
                                 value={profile.contact.location || ''}
                                 onChange={(e) => setProfile({ ...profile, contact: { ...profile.contact, location: e.target.value } })}
                                 disabled={!isEditing}
                                 placeholder="City, Country"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white\"
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">LinkedIn</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">LinkedIn</label>
                             <input
                                 type="url"
                                 value={profile.contact.linkedin || ''}
                                 onChange={(e) => setProfile({ ...profile, contact: { ...profile.contact, linkedin: e.target.value } })}
                                 disabled={!isEditing}
                                 placeholder="linkedin.com/in/username"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white\"
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">GitHub</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">GitHub</label>
                             <input
                                 type="url"
                                 value={profile.contact.github || ''}
                                 onChange={(e) => setProfile({ ...profile, contact: { ...profile.contact, github: e.target.value } })}
                                 disabled={!isEditing}
                                 placeholder="github.com/username"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white\"
                             />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="text-sm font-bold text-slate-600 mb-2 block">Portfolio Website</label>
+                            <label className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2 block">Portfolio Website</label>
                             <input
                                 type="url"
                                 value={profile.contact.portfolio || ''}
                                 onChange={(e) => setProfile({ ...profile, contact: { ...profile.contact, portfolio: e.target.value } })}
                                 disabled={!isEditing}
                                 placeholder="https://yourportfolio.com"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none disabled:bg-slate-50"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none disabled:bg-slate-50 dark:disabled:bg-slate-700 dark:bg-slate-700 dark:text-white\"
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Skills */}
-                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
+                <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 mb-6 shadow-sm border border-slate-200 dark:border-slate-700\">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <Code className="w-5 h-5 text-primary-600" />
+                            <Code className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                             Skills
                         </h2>
                         {isEditing && (
@@ -306,10 +306,10 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Education */}
-                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
+                <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 mb-6 shadow-sm border border-slate-200 dark:border-slate-700\">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <GraduationCap className="w-5 h-5 text-primary-600" />
+                            <GraduationCap className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                             Education
                         </h2>
                         {isEditing && (
@@ -387,10 +387,10 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Experience */}
-                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
+                <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 mb-6 shadow-sm border border-slate-200 dark:border-slate-700\">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <Briefcase className="w-5 h-5 text-primary-600" />
+                            <Briefcase className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                             Work Experience
                         </h2>
                         {isEditing && (
@@ -478,10 +478,10 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Internships */}
-                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
+                <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 mb-6 shadow-sm border border-slate-200 dark:border-slate-700\">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <Award className="w-5 h-5 text-primary-600" />
+                            <Award className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                             Internships
                         </h2>
                         {isEditing && (
@@ -560,10 +560,10 @@ const ProfilePage = () => {
 
                 {/* Languages & Hobbies */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700\">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <Globe className="w-5 h-5 text-primary-600" />
+                                <Globe className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                                 Languages
                             </h2>
                             {isEditing && (
@@ -589,17 +589,17 @@ const ProfilePage = () => {
                                             </button>
                                         </>
                                     ) : (
-                                        <span className="text-sm text-slate-700">{lang}</span>
+                                        <span className="text-sm text-slate-700 dark:text-slate-300\">{lang}</span>
                                     )}
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700\">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <Heart className="w-5 h-5 text-primary-600" />
+                                <Heart className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                                 Hobbies
                             </h2>
                             {isEditing && (
@@ -624,7 +624,7 @@ const ProfilePage = () => {
                                             </button>
                                         </>
                                     ) : (
-                                        <span className="text-sm text-slate-700">{hobby}</span>
+                                        <span className="text-sm text-slate-700 dark:text-slate-300\">{hobby}</span>
                                     )}
                                 </div>
                             ))}
@@ -633,9 +633,9 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Password Change */}
-                <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-slate-200">
-                    <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                        <Lock className="w-5 h-5 text-primary-600" />
+                <div className=\"bg-white dark:bg-slate-800 rounded-2xl p-6 mb-6 shadow-sm border border-slate-200 dark:border-slate-700\">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <Lock className="w-5 h-5 text-primary-600 dark:text-primary-400\" />
                         Change Password
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -644,21 +644,21 @@ const ProfilePage = () => {
                             placeholder="Current Password"
                             value={passwords.currentPassword}
                             onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })}
-                            className="px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none"
+                            className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none"
                         />
                         <input
                             type="password"
                             placeholder="New Password"
                             value={passwords.newPassword}
                             onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
-                            className="px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none"
+                            className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none"
                         />
                         <input
                             type="password"
                             placeholder="Confirm Password"
                             value={passwords.confirmPassword}
                             onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
-                            className="px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 outline-none"
+                            className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 focus:border-primary-500 outline-none"
                         />
                     </div>
                     <button
@@ -675,3 +675,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
