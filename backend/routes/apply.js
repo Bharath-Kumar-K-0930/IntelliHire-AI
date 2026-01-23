@@ -180,7 +180,7 @@ export default async function applyRoutes(fastify, options) {
             console.log(`[DEBUG PATCH] ID: ${id}`);
             console.log(`[DEBUG PATCH] Conditions:`, JSON.stringify(conditions));
 
-            const application = await Application.findOne({
+            let application = await Application.findOne({
                 userId,
                 $or: conditions
             });
