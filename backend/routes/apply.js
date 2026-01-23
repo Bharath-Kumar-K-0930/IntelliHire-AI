@@ -165,21 +165,17 @@ export default async function applyRoutes(fastify, options) {
         const { status, notes } = request.body;
 
         try {
-            // Flexible Lookup: Try by _id first, then by internal jobId (JSearch ID)
-            let query = { userId };
+            // Flexible Lookup: Try by _id OR by internal jobId (JSearch ID)
+            const conditions = [{ 'job.jobId': id }];
+
             if (mongoose.Types.ObjectId.isValid(id)) {
-                query._id = id;
-            } else {
-                query['job.jobId'] = id;
+                conditions.push({ _id: id });
             }
 
-            // Find first to get the correct document (in case we need to pivot search)
-            let application = await Application.findOne(query);
-
-            // Double check: if valid ID search failed, try ID as jobId string
-            if (!application && mongoose.Types.ObjectId.isValid(id)) {
-                application = await Application.findOne({ userId, 'job.jobId': id });
-            }
+            const application = await Application.findOne({
+                userId,
+                $or: conditions
+            });
 
             if (!application) {
                 return reply.code(404).send({ error: 'Application not found', id });
