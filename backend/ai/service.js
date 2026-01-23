@@ -65,7 +65,33 @@ export const parseMatchingResult = (responseText) => {
 export const getRuleBasedResponse = (message) => {
     const text = message.toLowerCase();
 
-    // 1. Navigation Commands
+    // 1. Casual Conversation & Greetings
+    if (text.match(/^(hi|hello|hey|greetings|sup)/)) {
+        return {
+            text: "Hello! I'm IntelliHire AI. I can help you find jobs, track applications, or analyze your resume. Try asking 'Show me React jobs' or 'Check my application status'.",
+            action: { type: 'NONE' }
+        };
+    }
+    if (text.includes('how are you')) {
+        return {
+            text: "I'm doing great! I'm ready to help you land your dream job. What are you looking for today?",
+            action: { type: 'NONE' }
+        };
+    }
+    if (text.includes('thank')) {
+        return {
+            text: "You're welcome! Let me know if you need anything else.",
+            action: { type: 'NONE' }
+        };
+    }
+    if (text.includes('help') || text.includes('support')) {
+        return {
+            text: "I can assist you with:\n- Finding Jobs: 'Remote frontend jobs'\n- Navigation: 'Go to dashboard'\n- Resume: 'Upload resume'\n- Status: 'Check my offers'",
+            action: { type: 'NONE' }
+        };
+    }
+
+    // 2. Navigation Commands
     if (text.includes('resume') || text.includes('upload')) {
         return {
             text: "Navigating to Resume Upload page.",
@@ -79,38 +105,45 @@ export const getRuleBasedResponse = (message) => {
         };
     }
 
-    // 2. Job Search Commands
-    if (text.includes('job') || text.includes('work') || text.includes('opening') || text.includes('role')) {
-        const payload = {};
+    // 3. Job Search Parsing (Enhanced)
+    // Trigger if "job", "work", OR explicit skills/locations are mentioned
+    const skills = [];
+    if (text.includes('react')) skills.push('react');
+    if (text.includes('node')) skills.push('node');
+    if (text.includes('python')) skills.push('python');
+    if (text.includes('java ') || text.includes('java,')) skills.push('java');
+    if (text.includes('javascript') || text.includes('js')) skills.push('javascript');
+    if (text.includes('design') || text.includes('figma') || text.includes('ui/ux')) skills.push('figma');
 
-        // Extract Skills
-        const skills = [];
-        if (text.includes('react')) skills.push('react');
-        if (text.includes('node')) skills.push('node');
-        if (text.includes('python')) skills.push('python');
-        if (text.includes('design') || text.includes('figma')) skills.push('figma');
+    // Check if it's a search intent
+    if (text.includes('job') || text.includes('work') || text.includes('opening') || text.includes('role') || skills.length > 0 || text.includes('remote') || text.includes('london') || text.includes('bangalore') || text.includes('india') || text.includes('usa')) {
+        const payload = {};
         if (skills.length > 0) payload.skills = skills.join(',');
 
         // Extract Location
         if (text.includes('remote')) payload.location = 'Remote';
         if (text.includes('london')) payload.location = 'London';
         if (text.includes('bangalore') || text.includes('bengaluru')) payload.location = 'Bangalore';
+        if (text.includes('india')) payload.location = 'India';
+        if (text.includes('usa') || text.includes('united states')) payload.location = 'USA';
 
         // Extract Role
         if (text.includes('senior')) payload.role = 'senior';
         if (text.includes('junior')) payload.role = 'junior';
         if (text.includes('frontend')) payload.role = 'frontend';
         if (text.includes('backend')) payload.role = 'backend';
+        if (text.includes('full stack') || text.includes('fullstack')) payload.role = 'full stack';
+        if (text.includes('designer')) payload.role = 'designer';
 
         return {
-            text: `Sure! Searching for ${payload.role || ''} jobs ${payload.location ? 'in ' + payload.location : ''} ${skills.length ? 'combining ' + skills.join(', ') : ''}.`,
+            text: `Sure! Searching for ${payload.role || 'relevant'} jobs${payload.location ? ' in ' + payload.location : ''}${skills.length ? ' with skills: ' + skills.join(', ') : ''}.`,
             action: { type: 'FILTER', payload }
         };
     }
 
-    // 3. Fallback / Help
+    // 4. Fallback
     return {
-        text: "I'm currently running in offline mode. I can help you find jobs (try 'remote react jobs') or navigate the site (try 'go to dashboard').",
+        text: "I'm currently running in offline Resilience Mode. I can help with basic queries like 'Show React jobs' or 'Go to dashboard'.",
         action: { type: 'NONE' }
     };
 };
