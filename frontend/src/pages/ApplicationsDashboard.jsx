@@ -1,11 +1,16 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Filter, CheckCircle, Clock, XCircle, Briefcase } from 'lucide-react';
 
 const ApplicationsDashboard = () => {
     const { applications, fetchApplications, updateApplicationStatus, user } = useApp();
-    const [filter, setFilter] = useState('All');
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // Derived state from URL or Default 'All'
+    const filter = searchParams.get('filter') || 'All';
+    const setFilter = (val) => setSearchParams({ filter: val });
 
     useEffect(() => {
         fetchApplications();

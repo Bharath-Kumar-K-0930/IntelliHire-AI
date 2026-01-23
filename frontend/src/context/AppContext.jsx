@@ -4,7 +4,12 @@ import axios from 'axios';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        try {
+            const stored = localStorage.getItem('user');
+            return stored ? JSON.parse(stored) : null;
+        } catch { return null; }
+    });
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [guestId] = useState('demo-user-' + Math.random().toString(36).substr(2, 9));
     // If user is logged in, use their ID. Else use guest ID.
