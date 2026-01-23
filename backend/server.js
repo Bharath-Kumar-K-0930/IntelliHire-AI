@@ -30,7 +30,8 @@ const fastify = Fastify({
 
 // Register Plugins
 await fastify.register(cors, {
-    origin: '*'
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
 });
 
 // Register Routes
