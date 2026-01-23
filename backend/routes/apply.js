@@ -172,12 +172,17 @@ export default async function applyRoutes(fastify, options) {
                 conditions.push({ _id: id });
             }
 
+            console.log(`[DEBUG PATCH] UserID: ${userId}`);
+            console.log(`[DEBUG PATCH] ID: ${id}`);
+            console.log(`[DEBUG PATCH] Conditions:`, JSON.stringify(conditions));
+
             const application = await Application.findOne({
                 userId,
                 $or: conditions
             });
 
             if (!application) {
+                console.log(`[DEBUG PATCH] Not Found for ${userId} / ${id}`);
                 return reply.code(404).send({ error: 'Application not found', id });
             }
 
