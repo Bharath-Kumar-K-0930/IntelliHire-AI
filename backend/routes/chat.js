@@ -1,4 +1,4 @@
-import { getGeminiResponse } from '../ai/service.js';
+import { getGeminiResponse, getRuleBasedResponse } from '../ai/service.js';
 import redis from '../redis/client.js';
 
 export default async function chatRoutes(fastify, options) {
@@ -77,12 +77,8 @@ export default async function chatRoutes(fastify, options) {
 
       return result;
     } catch (error) {
-      console.error('AI Processing Error:', error);
-      // Fallback with actual error for debugging
-      return {
-        text: `System Error: ${error.message}. Please check backend logs.`,
-        action: { type: 'NONE' }
-      };
+      console.error('AI Processing Error (Switching to Fallback):', error.message);
+      return getRuleBasedResponse(message);
     }
   });
 }

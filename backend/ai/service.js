@@ -61,3 +61,56 @@ export const parseMatchingResult = (responseText) => {
         return { matchScore: 0, strengths: [], missingSkills: [] };
     }
 };
+
+export const getRuleBasedResponse = (message) => {
+    const text = message.toLowerCase();
+
+    // 1. Navigation Commands
+    if (text.includes('resume') || text.includes('upload')) {
+        return {
+            text: "Navigating to Resume Upload page.",
+            action: { type: 'NAVIGATE', payload: { path: '/resume' } }
+        };
+    }
+    if (text.includes('application') || text.includes('status') || text.includes('dashboard')) {
+        return {
+            text: "Here is your Applications Dashboard.",
+            action: { type: 'NAVIGATE', payload: { path: '/applications' } }
+        };
+    }
+
+    // 2. Job Search Commands
+    if (text.includes('job') || text.includes('work') || text.includes('opening') || text.includes('role')) {
+        const payload = {};
+
+        // Extract Skills
+        const skills = [];
+        if (text.includes('react')) skills.push('react');
+        if (text.includes('node')) skills.push('node');
+        if (text.includes('python')) skills.push('python');
+        if (text.includes('design') || text.includes('figma')) skills.push('figma');
+        if (skills.length > 0) payload.skills = skills.join(',');
+
+        // Extract Location
+        if (text.includes('remote')) payload.location = 'Remote';
+        if (text.includes('london')) payload.location = 'London';
+        if (text.includes('bangalore') || text.includes('bengaluru')) payload.location = 'Bangalore';
+
+        // Extract Role
+        if (text.includes('senior')) payload.role = 'senior';
+        if (text.includes('junior')) payload.role = 'junior';
+        if (text.includes('frontend')) payload.role = 'frontend';
+        if (text.includes('backend')) payload.role = 'backend';
+
+        return {
+            text: `Sure! Searching for ${payload.role || ''} jobs ${payload.location ? 'in ' + payload.location : ''} ${skills.length ? 'combining ' + skills.join(', ') : ''}.`,
+            action: { type: 'FILTER', payload }
+        };
+    }
+
+    // 3. Fallback / Help
+    return {
+        text: "I'm currently running in offline mode. I can help you find jobs (try 'remote react jobs') or navigate the site (try 'go to dashboard').",
+        action: { type: 'NONE' }
+    };
+};
