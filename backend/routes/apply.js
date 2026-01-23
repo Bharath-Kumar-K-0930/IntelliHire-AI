@@ -165,8 +165,29 @@ export default async function applyRoutes(fastify, options) {
         const { status, notes } = request.body;
 
         try {
-            const application = await Application.findOneAndUpdate(
-                { _id: id, userId },
+            // Flexible Lookup: Try by _id first, then by internal jobId (JSearch ID)
+            let query = { userId };
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                query._id = id;
+            } else {
+                query['job.jobId'] = id;
+            }
+
+            // Find first to get the correct document (in case we need to pivot search)
+            let application = await Application.findOne(query);
+
+            // Double check: if valid ID search failed, try ID as jobId string
+            if (!application && mongoose.Types.ObjectId.isValid(id)) {
+                application = await Application.findOne({ userId, 'job.jobId': id });
+            }
+
+            if (!application) {
+                return reply.code(404).send({ error: 'Application not found', id });
+            }
+
+            // Perform Update
+            application = await Application.findByIdAndUpdate(
+                application._id,
                 {
                     $set: {
                         ...(status && { status }),
@@ -176,8 +197,6 @@ export default async function applyRoutes(fastify, options) {
                 },
                 { new: true }
             );
-
-            if (!application) return reply.code(404).send({ error: 'Application not found' });
 
             // Sync with Redis to prevent stale data
             const key = `applications:${userId}`;
