@@ -237,7 +237,7 @@ export default async function applyRoutes(fastify, options) {
             return application;
         } catch (error) {
             console.error(error);
-            return reply.code(500).send({ error: 'Update failed' });
+            return reply.code(500).send({ error: 'Update failed', details: error.message, stack: error.stack });
         }
     });
 }
