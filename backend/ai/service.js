@@ -30,6 +30,12 @@ export const getGeminiResponse = async (prompt) => {
             }
 
             const data = await response.json();
+
+            // DEBUG LOGGING
+            if (!data.candidates) {
+                console.log(`[Gemini Debug] No candidates from ${model}. Feedback:`, data.promptFeedback);
+            }
+
             if (!data.candidates || data.candidates.length === 0) continue;
 
             return data.candidates[0].content.parts[0].text;
