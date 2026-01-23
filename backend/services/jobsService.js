@@ -37,7 +37,7 @@ const fetchFromJSearch = async ({ query, page = 1 }) => {
             params: {
                 query: query,
                 page: page.toString(),
-                num_pages: '1'
+                num_pages: '5'
             },
             headers: {
                 'X-RapidAPI-Key': apiKey,
