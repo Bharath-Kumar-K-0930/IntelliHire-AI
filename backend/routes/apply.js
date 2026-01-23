@@ -14,6 +14,9 @@ export default async function applyRoutes(fastify, options) {
 
         try {
             // 1. Try fetching from Redis first (Speed)
+            // 1. Try fetching from Redis first (Speed)
+            // DISABLED FOR DEBUGGING: Force Source of Truth from MongoDB
+            /*
             const key = `applications:${userId}`;
             const cachedApps = await redis.get(key);
 
@@ -28,6 +31,7 @@ export default async function applyRoutes(fastify, options) {
                     return appsList;
                 }
             }
+            */
 
             // 2. Fallback to MongoDB (Reliability)
             const apps = await Application.find({ userId }).sort({ appliedAt: -1 });
