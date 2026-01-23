@@ -10,41 +10,36 @@ export const getGeminiResponse = async (prompt) => {
         throw new Error('GEMINI_API_KEY missing');
     }
 
-    // Direct REST API call to bypass SDK model resolution issues
-    // Using gemini-1.5-flash which we verified exists via REST API
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    // List of models to try in order of preference
+    // Supports fallback if 'flash' is 404/unavailable in region
+    const models = ['gemini-1.5-flash', 'gemini-pro', 'gemini-1.5-pro-latest'];
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: prompt }]
-                }]
-            })
-        });
+    for (const model of models) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Gemini API Error:', JSON.stringify(errorData, null, 2));
-            throw new Error(`Gemini API Failed: ${response.status} ${response.statusText}`);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.warn(`Gemini API Error (${model}):`, JSON.stringify(errorData));
+                continue; // Try next model
+            }
+
+            const data = await response.json();
+            if (!data.candidates || data.candidates.length === 0) continue;
+
+            return data.candidates[0].content.parts[0].text;
+        } catch (e) {
+            console.warn(`Network Error (${model}):`, e.message);
         }
-
-        const data = await response.json();
-
-        if (!data.candidates || data.candidates.length === 0) {
-            console.warn('Gemini returned no candidates.');
-            return "I couldn't generate a response. Please try again.";
-        }
-
-        return data.candidates[0].content.parts[0].text;
-    } catch (error) {
-        console.error('Error calling Gemini API (REST):', error.message);
-        throw error;
     }
+
+    console.error("All Gemini models failed to respond.");
+    throw new Error('All Gemini models failed.');
 };
 
 export const parseMatchingResult = (responseText) => {
