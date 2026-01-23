@@ -178,6 +178,38 @@ export default async function applyRoutes(fastify, options) {
             );
 
             if (!application) return reply.code(404).send({ error: 'Application not found' });
+
+            // Sync with Redis to prevent stale data
+            const key = `applications:${userId}`;
+            try {
+                const cachedApps = await redis.get(key);
+                if (cachedApps) {
+                    let appsList = [];
+                    try {
+                        appsList = JSON.parse(cachedApps);
+                        if (!Array.isArray(appsList)) appsList = [];
+                    } catch (e) { appsList = []; }
+
+                    // Find and update the specific application in the list
+                    const updatedList = appsList.map(app => {
+                        // Check matching ID (handle potential string vs ObjectId discrepancies)
+                        if (app._id === id || app.job?.jobId === application.job?.jobId) {
+                            return {
+                                ...app,
+                                status: status || app.status,
+                                notes: notes || app.notes,
+                                updatedAt: new Date().toISOString()
+                            };
+                        }
+                        return app;
+                    });
+
+                    await redis.set(key, JSON.stringify(updatedList));
+                }
+            } catch (redisErr) {
+                console.error('Failed to sync Redis on update:', redisErr);
+            }
+
             return application;
         } catch (error) {
             console.error(error);
