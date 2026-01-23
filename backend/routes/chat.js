@@ -78,9 +78,9 @@ export default async function chatRoutes(fastify, options) {
       return result;
     } catch (error) {
       console.error('AI Processing Error:', error);
-      // Fallback plain text response
+      // Fallback with actual error for debugging
       return {
-        text: "I'm having trouble processing that request right now. Could you try rephrasing?",
+        text: `System Error: ${error.message}. Please check backend logs.`,
         action: { type: 'NONE' }
       };
     }
