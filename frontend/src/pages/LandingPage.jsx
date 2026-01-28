@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Search, FileText, Layout, Github, Linkedin, Mail, Instagram, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle, Search, FileText, Layout, Github, Linkedin, Mail, Instagram, Sparkles, Upload, Zap, TrendingUp } from 'lucide-react';
 import DarkModeToggle from '../components/DarkModeToggle';
 
 const LandingPage = () => {
@@ -99,6 +99,78 @@ const LandingPage = () => {
                 </div>
             </section>
 
+            {/* How it Works Section */}
+            <section id="how-it-works" className="py-24 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <div className="inline-block px-4 py-1.5 mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/40 rounded-full">
+                            The Process
+                        </div>
+                        <h2 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter">HOW IT WORKS</h2>
+                        <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+                            Experience a seamless journey from uploading your resume to landing your next opportunity.
+                        </p>
+                    </div>
+
+                    <div className="relative">
+                        {/* Connecting Line for Desktop */}
+                        <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent -translate-y-1/2 z-0"></div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
+                            {[
+                                {
+                                    step: "01",
+                                    icon: Upload,
+                                    title: "Upload Resume",
+                                    desc: "Simply drop your PDF or TXT resume. Our system handles the rest.",
+                                    color: "bg-blue-500"
+                                },
+                                {
+                                    step: "02",
+                                    icon: Zap,
+                                    title: "AI Analysis",
+                                    desc: "Gemini AI extracts your skills, experience, and career trajectory in seconds.",
+                                    color: "bg-amber-500"
+                                },
+                                {
+                                    step: "03",
+                                    icon: Search,
+                                    title: "Smart Matching",
+                                    desc: "Browse real-world jobs automatically ranked by their match to your profile.",
+                                    color: "bg-emerald-500"
+                                },
+                                {
+                                    step: "04",
+                                    icon: TrendingUp,
+                                    title: "Track Success",
+                                    desc: "Manage applications, track interviews, and celebrate offers in one place.",
+                                    color: "bg-primary-600"
+                                }
+                            ].map((item, i) => (
+                                <div key={i} className="flex flex-col items-center group">
+                                    <div className="relative mb-8">
+                                        <div className={`w-20 h-20 ${item.color} rounded-2xl shadow-xl flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300`}>
+                                            <item.icon className="w-10 h-10 text-white" />
+                                        </div>
+                                        <div className="absolute -top-4 -right-4 w-10 h-10 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-full flex items-center justify-center font-black text-xs text-primary-600 dark:text-primary-400 shadow-sm">
+                                            {item.step}
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">{item.title}</h3>
+                                    <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed text-center px-4 max-w-xs">{item.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-20 text-center">
+                        <Link to="/register" className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-bold hover:gap-3 transition-all">
+                            Create your free account to get started <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
             {/* Footer */}
             <footer className="bg-slate-900 text-white py-12 border-t border-slate-800">
                 <div className="max-w-7xl mx-auto px-6">
@@ -135,6 +207,7 @@ const LandingPage = () => {
                             <h4 className="text-lg font-bold mb-6">Quick Links</h4>
                             <ul className="space-y-4 text-slate-400 font-medium">
                                 <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
+                                <li><a href="#how-it-works" className="hover:text-white transition-colors">How it Works</a></li>
                                 <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
                                 <li><Link to="/login" className="hover:text-white transition-colors">Sign In</Link></li>
                                 <li><Link to="/register" className="hover:text-white transition-colors">Get Started</Link></li>
