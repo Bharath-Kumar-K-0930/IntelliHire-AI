@@ -62,6 +62,32 @@ export default async function jobRoutes(fastify, options) {
             });
         }
 
+        // Fallback if scoring/filtering left us with absolutely nothing
+        // Fallback if scoring/filtering left us with absolutely nothing
+        if (jobs.length === 0) {
+            console.warn('Job filters resulted in 0 jobs. Falling back to generic mock jobs to prevent empty state.');
+            const mockFallback = await fetchJobs({ role: '', skills: '', location: '' }); // Uses fallback inside fetchJobs
+
+            // Re-apply basic filters to mock data so it makes *some* sense if possible, otherwise just show them
+            let filteredMocks = mockFallback;
+
+            if (jobType && jobType !== 'any') filteredMocks = filteredMocks.filter(j => j.jobType === jobType);
+            if (workMode && workMode !== 'any') filteredMocks = filteredMocks.filter(j => j.workMode === workMode);
+
+            // If they filtered too hard and even mock data doesn't match, just return the raw mock data to show *something* 
+            if (filteredMocks.length === 0) {
+                filteredMocks = mockFallback;
+            }
+
+            // Score the fallbacks just in case
+            const scoredMocks = filteredMocks.map(job => {
+                const match = scoreJob(resumeText, job);
+                return { ...job, matchScore: match.score, matchReason: match.reason };
+            });
+
+            return scoredMocks;
+        }
+
         return jobs;
     });
 

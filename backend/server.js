@@ -43,6 +43,19 @@ fastify.register(applyRoutes, { prefix: '/api' });
 fastify.register(chatRoutes, { prefix: '/api' });
 fastify.register(profileRoutes, { prefix: '/api' });
 
+// Global Error Handler
+fastify.setErrorHandler(async (error, request, reply) => {
+    fastify.log.error(error);
+    const errorLog = `[${new Date().toISOString()}] GLOBAL ERROR: ${error.message}\nStack: ${error.stack}\nPath: ${request.url}\n\n`;
+    await fs.promises.appendFile(path.join(__dirname, 'backend_errors.txt'), errorLog);
+
+    reply.status(500).send({
+        error: 'Internal Server Error',
+        message: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+});
+
 // Serve static files if they exist
 const publicPath = path.join(__dirname, 'public');
 if (fs.existsSync(publicPath)) {

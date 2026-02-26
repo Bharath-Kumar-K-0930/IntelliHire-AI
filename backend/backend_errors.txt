@@ -22,3 +22,26 @@ Stack: MongoServerSelectionError: 84530000:error:0A000438:SSL routines:ssl3_read
     at async model.Query.exec (D:\Projects\IntelliHire AI\backend\node_modules\mongoose\lib\query.js:4652:63)
     at async Object.<anonymous> (file:///D:/Projects/IntelliHire%20AI/backend/routes/resume.js:39:17)
 
+[2026-02-26T10:26:23.601Z] Error: fetch failed
+Stack: TypeError: fetch failed
+    at node:internal/deps/undici/undici:13510:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async HttpClient.request (file:///D:/Projects/IntelliHire%20AI%20Project/backend/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:171:15)
+    at async Pipeline.exec (file:///D:/Projects/IntelliHire%20AI%20Project/backend/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:2528:17)
+    at async AutoPipelineExecutor.withAutoPipeline (file:///D:/Projects/IntelliHire%20AI%20Project/backend/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:3443:21)
+    at async Object.<anonymous> (file:///D:/Projects/IntelliHire%20AI%20Project/backend/routes/resume.js:40:13)
+
+[2026-02-26T11:03:09.781Z] GLOBAL ERROR: Unsupported Media Type: application/pdf
+Stack: FastifyError: Unsupported Media Type: application/pdf
+    at ContentTypeParser.run (D:\Projects\IntelliHire AI Project\backend\node_modules\fastify\lib\content-type-parser.js:185:16)
+    at Object.handleRequest (D:\Projects\IntelliHire AI Project\backend\node_modules\fastify\lib\handle-request.js:52:46)
+    at runPreParsing (D:\Projects\IntelliHire AI Project\backend\node_modules\fastify\lib\route.js:612:19)
+    at next (D:\Projects\IntelliHire AI Project\backend\node_modules\fastify\lib\hooks.js:236:9)
+    at D:\Projects\IntelliHire AI Project\backend\node_modules\@fastify\cors\index.js:215:12
+    at resolveOriginOption (D:\Projects\IntelliHire AI Project\backend\node_modules\@fastify\cors\index.js:168:129)
+    at addCorsHeadersHandler (D:\Projects\IntelliHire AI Project\backend\node_modules\@fastify\cors\index.js:170:3)
+    at Object.handleCors (D:\Projects\IntelliHire AI Project\backend\node_modules\@fastify\cors\index.js:65:9)
+    at hookIterator (D:\Projects\IntelliHire AI Project\backend\node_modules\fastify\lib\hooks.js:408:10)
+    at next (D:\Projects\IntelliHire AI Project\backend\node_modules\fastify\lib\hooks.js:242:18)
+Path: /api/resume/upload
+
