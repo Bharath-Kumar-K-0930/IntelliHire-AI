@@ -25,13 +25,7 @@ export default async function jobRoutes(fastify, options) {
             }
         }
 
-        // Filter by Skills (Simple string match)
-        if (skills) {
-            const skillList = skills.split(',').map(s => s.trim().toLowerCase());
-            if (skillList.length > 0 && skillList[0] !== '') {
-                jobs = jobs.filter(j => skillList.some(s => j.description.toLowerCase().includes(s)));
-            }
-        }
+        // (Filtering by Skills is now handled directly by the JSearch API in fetchJobs to prevent over-filtering)
 
         // --- SCORING LOGIC ---
         const resumeText = await redis.get(`resume:${userId}`);

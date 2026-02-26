@@ -136,10 +136,10 @@ const JobFeed = () => {
 
     const handleSearch = () => {
         setSearchPerformed(true);
-        // Convert arrays to appropriate strings for the API
-        const roleQuery = roles.join(' ');
-        const locationQuery = locations.join(', ');
-        const skillsQuery = selectedSkills.join(',');
+        // Convert arrays to strings with explicit logical operators for JSearch
+        const roleQuery = roles.join(', ');
+        const locationQuery = locations.join(' OR ');
+        const skillsQuery = selectedSkills.join(', ');
 
         fetchJobs({
             role: roleQuery,

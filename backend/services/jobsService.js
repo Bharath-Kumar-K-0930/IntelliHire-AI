@@ -78,57 +78,109 @@ const fetchFromJSearch = async ({ query, page = 1 }) => {
         console.error('JSearch API Error:', error.message);
         if (error.response) {
             console.error('API Response:', error.response.status, error.response.data);
+            if ([401, 403, 429].includes(error.response.status)) {
+                throw new Error('API_QUOTA_EXHAUSTED');
+            }
         }
         return null;
     }
 };
 
 export const fetchJobs = async ({ page = 1, role = '', skills = '', location = '' }) => {
-    // Construct a smart query string for JSearch
-    // e.g. "React Developer in Bangalore, India"
-    let queryParts = [];
-    if (role) queryParts.push(role);
-    if (skills) queryParts.push(skills);
+    try {
+        let queryParts = [];
 
-    // JSearch handles natural language queries well
-    let baseQuery = queryParts.join(' ');
+        if (role) {
+            const roleList = role.split(',').map(r => r.trim()).filter(Boolean);
+            if (roleList.length > 1) {
+                queryParts.push(`(${roleList.join(' OR ')})`);
+            } else if (roleList.length === 1) {
+                queryParts.push(roleList[0]);
+            }
+        }
 
-    // Tiered Search Logic with Redis Caching implicitly handling duplicates via cache keys
+        if (skills) {
+            const skillList = skills.split(',').map(s => s.trim()).filter(Boolean);
+            if (skillList.length > 1) {
+                queryParts.push(`(${skillList.join(' OR ')})`);
+            } else if (skillList.length === 1) {
+                queryParts.push(skillList[0]);
+            }
+        }
 
-    // Tier 1: Full Query (Role + Skills + Location)
-    if (baseQuery && location) {
-        const fullQuery = `${baseQuery} in ${location}`;
-        const jobs = await fetchFromJSearch({ query: fullQuery, page });
-        if (jobs && jobs.length > 0) return jobs;
-    }
+        let baseQuery = queryParts.join(' ').trim();
 
-    // Tier 2: Role + Skills (No Location specified)
-    if (baseQuery && !location) {
-        const jobs = await fetchFromJSearch({ query: baseQuery, page });
-        if (jobs && jobs.length > 0) return jobs;
-    }
+        // Tiered Search Logic with Redis Caching implicitly handling duplicates via cache keys
+        // Tier 1: Full Query (Role + Skills + Location)
+        if (baseQuery && location) {
+            const fullQuery = `${baseQuery} in ${location}`;
+            const jobs = await fetchFromJSearch({ query: fullQuery, page });
+            if (jobs && jobs.length > 0) return jobs;
+        }
 
-    // Tier 3: Location Only (last resort, generic jobs in area)
-    if (location) {
-        const jobs = await fetchFromJSearch({ query: `Jobs in ${location}`, page });
-        if (jobs && jobs.length > 0) return jobs;
-    }
+        // Tier 2: Role + Skills (Fallback if Tier 1 fails, or if no location specified)
+        if (baseQuery) {
+            const jobs = await fetchFromJSearch({ query: baseQuery, page });
+            if (jobs && jobs.length > 0) return jobs;
+        }
 
-    // Tier 4: Fallback to broad "Developer" search if nothing else
-    if (!baseQuery && !location) {
-        console.log('No specific criteria, fetching general Developer jobs');
+        // Tier 3: Location Only (last resort, generic jobs in area)
+        if (location) {
+            const jobs = await fetchFromJSearch({ query: `Jobs in ${location}`, page });
+            if (jobs && jobs.length > 0) return jobs;
+        }
+
+        // Tier 4: Fallback to broad "Developer" search if nothing else worked
+        console.log('No specific criteria met, fetching general Developer jobs');
         const jobs = await fetchFromJSearch({ query: 'Software Developer', page });
         if (jobs && jobs.length > 0) return jobs;
+
+        // Fallback to Mock Data if API returns empty arrays across all valid tiers
+        console.warn('JSearch API returned no results for all tiers. Returning Mock Data as fallback.');
+        return getFilteredMockJobs(role, location, skills);
+
+    } catch (error) {
+        if (error.message === 'API_QUOTA_EXHAUSTED') {
+            console.warn('JSearch API rate limit reached or invalid credentials (429/401/403). Falling back directly to Mock Data to prevent 0 results cascade.');
+            return getFilteredMockJobs(role, location, skills);
+        }
+        console.error('Unexpected error during fetchJobs:', error);
+        return getFilteredMockJobs(role, location, skills);
+    }
+};
+
+const getFilteredMockJobs = (role, location, skills) => {
+    let mockJobs = getMockJobs();
+
+    if (role) {
+        const roleList = role.split(',').map(r => r.trim().toLowerCase()).filter(Boolean);
+        if (roleList.length > 0) {
+            mockJobs = mockJobs.filter(j => roleList.some(r => j.title.toLowerCase().includes(r) || j.description.toLowerCase().includes(r)));
+        }
     }
 
-    // Fallback to Mock Data if API fails completely, returns 403/429, or returns empty arrays
-    console.warn('JSearch API returned no results or failed for all tiers. Returning Mock Data as fallback.');
-    return getMockJobs();
+    if (location) {
+        const locList = location.split(' OR ').map(l => l.trim().toLowerCase()).filter(Boolean);
+        if (locList.length > 0) {
+            mockJobs = mockJobs.filter(j => locList.some(l => j.location.toLowerCase().includes(l) || j.workMode.toLowerCase() === 'remote'));
+        }
+    }
+
+    if (skills) {
+        const skillList = skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+        if (skillList.length > 0) {
+            mockJobs = mockJobs.filter(j => skillList.some(s => j.description.toLowerCase().includes(s) || j.title.toLowerCase().includes(s)));
+        }
+    }
+
+    // Always return at least some jobs if it filters down to absolutely 0, to avoid blank screen
+    return mockJobs.length > 0 ? mockJobs : getMockJobs();
 };
 
 const mapJobType = (type) => {
-    if (type === 'permanent') return 'Full-time';
-    if (type === 'contract') return 'Contract';
+    if (type === 'permanent' || type === 'fulltime' || type === 'full-time') return 'Full-time';
+    if (type === 'contract' || type === 'contractor') return 'Contract';
+    if (type === 'intern' || type === 'internship') return 'Internship';
     return 'Part-time';
 };
 
